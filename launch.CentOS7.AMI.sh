@@ -15,6 +15,7 @@ IMAGE="ami-c7d092f7"
 HOSTNAME=
 SCRIPT="file://~/scripts/template.webtier.user-data.sh"
 PLATFORM="CentOS7"
+TIER="Web"
 TYPE="t2.micro"
 GROUP="WebTierNetworkAccess"
 ROLE="S3ReadOnlyAccess"
@@ -41,5 +42,5 @@ $COMMAND $EXEC | tee $OUT
 # parse output and tag the new instance
 IID=`cat $OUT | grep InstanceId | awk '{print $2}' | sed s/\"//g | sed s/,//g`
 echo "Tagging instance..."
-aws ec2 create-tags --resources $IID --tags Key=Name,Value=$HOSTNAME Key=Platform,Value=$PLATFORM
+aws ec2 create-tags --resources $IID --tags Key=Name,Value=$HOSTNAME Key=Platform,Value=$PLATFORM Key=Tier,Value=$TIER
 rm -f $OUT
