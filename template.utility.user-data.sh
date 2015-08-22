@@ -9,6 +9,10 @@ yum update -y
 # install some stuff
 yum install bind-utils nc zip unzip -y
 
+# install system stress tool
+curl "http://dl.fedoraproject.org/pub/epel/6/x86_64/stress-1.0.4-4.el6.x86_64.rpm" -o stress-1.0.4-4.el6.x86_64.rpm
+yum install -y stress-1.0.4-4.el6.x86_64.rpm
+
 # install the aws command line
 curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
 unzip awscli-bundle.zip
