@@ -6,6 +6,7 @@ function usage() {
 }
 
 # check params and load variables
+USERHOST=UtilityInstance
 if [[ $# -gt 2 ]]; then
   usage
   exit 
@@ -23,13 +24,14 @@ else
 fi
 
 # create template
-cp ~/scripts/template.utility.user-data.sh ~/scripts/${USERHOST}.utility.user-data.sh
-sed -i s/UtilityTierASinstance/${USERHOST}/g ~/scripts/${USERHOST}.utility.user-data.sh
+USERDATA=`mktemp`
+cp ~/scripts/template.utility.user-data.sh $USERDATA
+sed -i s/UtilityInstance/${USERHOST}/g $USERDATA
 
 # specify machine details
 IMAGE="ami-c7d092f7"
-SCRIPT="file://~/scripts/${USERHOST}.utility.user-data.sh"
-PLATFORM="CentOS7"
+SCRIPT="file://$USERDATA"
+PLATFORM="CentOS 7"
 TIER="Utility"
 TYPE="t2.micro"
 GROUP="UtilityTierNetworkAccess"
@@ -54,8 +56,8 @@ OUT=`mktemp`
 echo $COMMAND $EXEC
 $COMMAND $EXEC | tee $OUT
 
+# grab the instance ID
 IID=`cat $OUT | grep InstanceId | awk '{print $2}' | sed s/\"//g | sed s/,//g`
-rm -f $OUT
 
 echo "Tagging instance..."
 aws ec2 create-tags --resources $IID --tags Key=Name,Value=$USERHOST Key=Platform,Value=$PLATFORM Key=Tier,Value=$TIER
@@ -105,3 +107,5 @@ aws cloudwatch put-metric-alarm \
 
 echo
 
+# clean us temp files
+rm -f $OUT $USERDATA
