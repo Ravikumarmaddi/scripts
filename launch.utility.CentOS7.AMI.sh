@@ -1,18 +1,29 @@
 #!/bin/bash
 
-# todo
-# parametize the hostname
+# usage function
+function usage() {
+  echo "Usage: `basename $0` [--launch|--help] [hostname]"
+}
 
-# dry run by default
-for o in "$@"; do
+# check params and load variables
+if [[ $# -gt 2 ]]; then
+  usage();
+  exit
+else
+for o in $@; do
   if [[ $o == "--launch" ]]; then
     LAUNCH=TRUE
+  elseif [[ $o == "--help" ]]; then
+    usage();
+  else
+    HOSTNAME=$o
   fi
+fi                        
 done
+
 
 # specify machine details
 IMAGE="ami-c7d092f7"
-HOSTNAME=theseeker
 SCRIPT="file://~/scripts/template.utility.user-data.sh"
 PLATFORM="CentOS7"
 TIER="Utility"
