@@ -6,6 +6,7 @@ function usage() {
 }
 
 # check params and load variables
+USERHOST=WebTierASinstance
 if [[ $# -gt 2 ]]; then
   usage
   exit 
@@ -23,13 +24,14 @@ else
 fi
 
 # create template
-cp ~/scripts/template.webtier.user-data.sh ~/scripts/${USERHOST}.webtier.user-data.sh
-sed -i s/WebTierASinstance/${USERHOST}/g ~/scripts/${USERHOST}.webtier.user-data.sh
+USERDATA=`mktemp`
+cp ~/scripts/template.webtier.user-data.sh $USERDATA
+sed -i s/WebTierASinstance/${USERHOST}/g $USERDATA
 
 # specify machine details
 IMAGE="ami-c7d092f7"
-SCRIPT="file://~/scripts/${USERHOST}.webtier.user-data.sh"
-PLATFORM="CentOS7"
+SCRIPT="file://$USERDATA"
+PLATFORM="CentOS 7"
 TIER="Web"
 TYPE="t2.micro"
 GROUP="WebTierNetworkAccess"
@@ -106,3 +108,5 @@ aws cloudwatch put-metric-alarm \
 
 echo
 
+# clean up temp files
+rm -f $OUT $USERDATA
