@@ -7,19 +7,20 @@ function usage() {
 
 # check params and load variables
 if [[ $# -gt 2 ]]; then
-  usage()
-  exit
+  usage
+  exit 
 else
-for o in $@; do
-  if [[ $o == "--launch" ]]; then
-    LAUNCH=TRUE
-  elseif [[ $o == "--help" ]]; then
-    usage()
-  else
-    HOSTNAME=$o
-  fi
+  for o in $@; do
+    if [[ $o == "--launch" ]]; then
+      LAUNCH=TRUE
+    elif [[ $o == "--help" ]]; then
+      usage
+      exit
+    else
+      HOSTNAME=$o
+    fi
+  done
 fi
-done
 
 # specify machine details
 IMAGE="ami-c7d092f7"
