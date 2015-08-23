@@ -58,11 +58,12 @@ $COMMAND $EXEC | tee $OUT
 
 # parse output and tag the new instance
 IID=`cat $OUT | grep InstanceId | awk '{print $2}' | sed s/\"//g | sed s/,//g`
-rm -f $OUT
 
+# tag the instance
 echo "Tagging instance..."
 aws ec2 create-tags --resources $IID --tags Key=Name,Value=$USERHOST Key=Platform,Value=$PLATFORM Key=Tier,Value=$TIER
 
+# monitor the instance
 echo -n "Monitoring instance... "
 echo -n "HighCPU... "
 aws cloudwatch put-metric-alarm \
