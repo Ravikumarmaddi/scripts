@@ -31,7 +31,7 @@ sed -i s/WebInstance/${USERHOST}/g $USERDATA
 # specify machine details
 IMAGE="ami-c7d092f7"
 SCRIPT="file://$USERDATA"
-PLATFORM="CentOS 7"
+PLATFORM="CentOS7"
 TIER="Web"
 TYPE="t2.micro"
 GROUP="WebTierNetworkAccess"
@@ -111,3 +111,4 @@ echo
 
 # clean up temp files
 rm -f $OUT $USERDATA
+
