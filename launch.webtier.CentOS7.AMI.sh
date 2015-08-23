@@ -7,14 +7,14 @@ function usage() {
 
 # check params and load variables
 if [[ $# -gt 2 ]]; then
-  usage();
+  usage()
   exit
 else
 for o in $@; do
   if [[ $o == "--launch" ]]; then
     LAUNCH=TRUE
   elseif [[ $o == "--help" ]]; then
-    usage();
+    usage()
   else
     HOSTNAME=$o
   fi
