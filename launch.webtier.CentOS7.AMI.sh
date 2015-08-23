@@ -56,7 +56,7 @@ OUT=`mktemp`
 echo $COMMAND $EXEC
 $COMMAND $EXEC | tee $OUT
 
-# parse output and tag the new instance
+# grab the instance id
 IID=`cat $OUT | grep InstanceId | awk '{print $2}' | sed s/\"//g | sed s/,//g`
 
 # tag the instance

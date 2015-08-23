@@ -56,7 +56,7 @@ OUT=`mktemp`
 echo $COMMAND $EXEC
 $COMMAND $EXEC | tee $OUT
 
-# grab the instance ID
+# grab the instance id
 IID=`cat $OUT | grep InstanceId | awk '{print $2}' | sed s/\"//g | sed s/,//g`
 
 # tag the instance
@@ -109,5 +109,5 @@ aws cloudwatch put-metric-alarm \
 
 echo
 
-# clean us temp files
+# clean up temp files
 rm -f $OUT $USERDATA
