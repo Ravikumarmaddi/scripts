@@ -17,18 +17,22 @@ else
       usage
       exit
     else
-      HOSTNAME=$o
+      USERHOST=$o
     fi
   done
 fi
 
+# create template
+cp ~/scripts/template.utility.user-data.sh ~/scripts/${USERHOST}.utility.user-data.sh
+sed -i s/UtilityTierASinstance/${USERHOST}/g ~/scripts/${USERHOST}.utility.user-data.sh
+
 # specify machine details
 IMAGE="ami-c7d092f7"
-SCRIPT="file://~/scripts/template.utility.user-data.sh"
+SCRIPT="file://~/scripts/${USERHOST}.utility.user-data.sh"
 PLATFORM="CentOS7"
 TIER="Utility"
 TYPE="t2.micro"
-GROUP="theseeker"
+GROUP="UtilityTierNetworkAccess"
 ROLE="S3FullAccess"
 REGION="us-west-2"
 KEY="kpedersen_aws_rsa"
@@ -50,8 +54,54 @@ OUT=`mktemp`
 echo $COMMAND $EXEC
 $COMMAND $EXEC | tee $OUT
 
-# parse output and tag the new instance
 IID=`cat $OUT | grep InstanceId | awk '{print $2}' | sed s/\"//g | sed s/,//g`
-echo "Tagging instance..."
-aws ec2 create-tags --resources $IID --tags Key=Name,Value=$HOSTNAME Key=Platform,Value=$PLATFORM Key=Tier,Value=$TIER
 rm -f $OUT
+
+echo "Tagging instance..."
+aws ec2 create-tags --resources $IID --tags Key=Name,Value=$USERHOST Key=Platform,Value=$PLATFORM Key=Tier,Value=$TIER
+
+echo -n "Monitoring instance... "
+echo -n "HighCPU... "
+aws cloudwatch put-metric-alarm \
+--alarm-name $USERHOST.HighCPU \
+--metric-name CPUUtilization \
+--namespace AWS/EC2 \
+--statistic Average \
+--period 300 \
+--threshold 80 \
+--comparison-operator GreaterThanThreshold \
+--dimensions Name=InstanceID,Value=$IID \
+--evaluation-periods 1 \
+--unit Percent \
+--alarm-actions arn:aws:sns:us-west-2:035296091979:administrator
+
+echo -n "HighOutboundTraffic... "
+aws cloudwatch put-metric-alarm \
+--alarm-name $USERHOST.HighOutboundTraffic \
+--metric-name NetworkOut \
+--namespace AWS/EC2 \
+--statistic Average \
+--period 300 \
+--threshold 50000000 \
+--comparison-operator GreaterThanThreshold \
+--dimensions Name=InstanceID,Value=$IID \
+--evaluation-periods 1 \
+--unit Bytes \
+--alarm-actions arn:aws:sns:us-west-2:035296091979:administrator
+
+echo -n "StatusCheckFailed... "
+aws cloudwatch put-metric-alarm \
+--alarm-name $USERHOST.StatusCheckFailed \
+--metric-name StatusCheckFailed \
+--namespace AWS/EC2 \
+--statistic Maximum \
+--period 300 \
+--threshold 1 \
+--comparison-operator GreaterThanOrEqualToThreshold \
+--dimensions Name=InstanceID,Value=$IID \
+--evaluation-periods 1 \
+--unit Count \
+--alarm-actions arn:aws:sns:us-west-2:035296091979:administrator
+
+echo
+
