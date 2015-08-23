@@ -6,7 +6,7 @@ function usage() {
 }
 
 # check params and load variables
-USERHOST=UtilityTierASinstance
+USERHOST=UtilityInstance
 if [[ $# -gt 1 ]]; then
   usage
   exit 
