@@ -1,7 +1,25 @@
 #!/bin/bash
 
-# set the hostname here, optionally
-# USERHOST=
+# usage function
+function usage() {
+  echo "Usage: `basename $0` [--help] | [hostname]"
+}
+
+# check params and load variables
+USERHOST=WebTierASinstance
+if [[ $# -gt 1 ]]; then
+  usage
+  exit 
+else
+  for o in $@; do
+    if [[ $o == "--help" ]]; then
+      usage
+      exit
+    else
+      USERHOST=$o
+    fi
+  done
+fi
 
 # ensure the system is up to date
 yum update -y
@@ -13,11 +31,10 @@ yum install httpd unzip -y
 curl "http://dl.fedoraproject.org/pub/epel/6/x86_64/stress-1.0.4-4.el6.x86_64.rpm" -o stress-1.0.4-4.el6.x86_64.rpm
 yum install -y stress-1.0.4-4.el6.x86_64.rpm
 
-# install the aws command line (required for S3 access)
+# install the aws command line 
 curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
 unzip awscli-bundle.zip
 ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
-rm -rf awscli-bundle
 
 # clean up
 rm -rf awscli-bundle
@@ -44,13 +61,13 @@ fi
 SHOST=`curl http://169.254.169.254/latest/meta-data/public-hostname/ | awk -F . '{print $1}'`
 LHOST=`curl http://169.254.169.254/latest/meta-data/public-hostname/`
 IPADDR=`curl http://169.254.169.254/latest/meta-data/public-ipv4/`
-echo $IPADDR $LHOST $SHOST $HOSTNAME >> /etc/hosts
+echo $IPADDR $LHOST $SHOST $USERHOST >> /etc/hosts
 #
 # short, long and user names for local/private IP
 SHOST=`curl http://169.254.169.254/latest/meta-data/local-hostname/ | awk -F . '{print $1}'`
 LHOST=`curl http://169.254.169.254/latest/meta-data/local-hostname/`
 IPADDR=`curl http://169.254.169.254/latest/meta-data/local-ipv4/`
-echo $IPADDR $LHOST $SHOST $HOSTNAME.local $HOSTNAME.private >> /etc/hosts
+echo $IPADDR $LHOST $SHOST $USERHOST.local $USERHOST.private >> /etc/hosts
 
 # configure iam user/key and sudoers
 useradd kpedersen -d /home/kpedersen -s /bin/bash
@@ -65,4 +82,3 @@ sed -i s/centos/kpedersen/g /etc/sudoers.d/*
 # clean up bash history
 cat /dev/null > /root/.bash_history
 cat /dev/null > /home/centos/.bash_history
-

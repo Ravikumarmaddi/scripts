@@ -1,7 +1,25 @@
 #!/bin/bash
 
-# set the hostname here, optionally
-# USERHOST=
+# usage function
+function usage() {
+  echo "Usage: `basename $0` [--help] | [hostname]"
+}
+
+# check params and load variables
+USERHOST=UtilityTierASinstance
+if [[ $# -gt 1 ]]; then
+  usage
+  exit 
+else
+  for o in $@; do
+    if [[ $o == "--help" ]]; then
+      usage
+      exit
+    else
+      USERHOST=$o
+    fi
+  done
+fi
 
 # ensure the system is up to date
 yum update -y
@@ -18,6 +36,9 @@ curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
 unzip awscli-bundle.zip
 ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
 
+# clean up
+rm -rf awscli-bundle
+
 # set the hostname, if specified
 if [ -n "$USERHOST" ]; then
   sed -i '1s/^/preserve_hostname: true\n/' /etc/cloud/cloud.cfg
@@ -31,16 +52,16 @@ fi
 SHOST=`curl -s http://169.254.169.254/latest/meta-data/public-hostname/ | awk -F . '{print $1}'`
 LHOST=`curl -s http://169.254.169.254/latest/meta-data/public-hostname/`
 IPADDR=`curl -s http://169.254.169.254/latest/meta-data/public-ipv4/`
-echo $IPADDR $LHOST $SHOST $HOSTNAME >> /etc/hosts
+echo $IPADDR $LHOST $SHOST $USERHOST >> /etc/hosts
 #
 # short, long and user names for local/private IP
 SHOST=`curl -s http://169.254.169.254/latest/meta-data/local-hostname/ | awk -F . '{print $1}'`
 LHOST=`curl -s http://169.254.169.254/latest/meta-data/local-hostname/`
 IPADDR=`curl -s http://169.254.169.254/latest/meta-data/local-ipv4/`
-echo $IPADDR $LHOST $SHOST $HOSTNAME.local $HOSTNAME.private >> /etc/hosts
+echo $IPADDR $LHOST $SHOST $USERHOST.local $USERHOST.private >> /etc/hosts
 
-# configure iam user and authkey
-useradd kpedersen -g kpedersen -d /home/kpedersen -s /bin/bash
+# configure iam user/key and sudoers
+useradd kpedersen -d /home/kpedersen -s /bin/bash
 usermod -G wheel,adm kpedersen
 mkdir -p /home/kpedersen/.ssh
 curl -s "http://169.254.169.254/latest/meta-data/public-keys/0/openssh-key/" -o /home/kpedersen/.ssh/authorized_keys
