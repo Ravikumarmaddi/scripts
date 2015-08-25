@@ -25,7 +25,7 @@ fi
 yum update -y
 
 # install required packages
-yum install httpd unzip -y
+yum install httpd php php-mysql unzip -y
 
 # install system stress tool
 curl "http://dl.fedoraproject.org/pub/epel/6/x86_64/stress-1.0.4-4.el6.x86_64.rpm" -o stress-1.0.4-4.el6.x86_64.rpm
@@ -47,6 +47,7 @@ chmod 644 /var/www/html/*
 # configure web service to run
 chkconfig httpd on
 service httpd start
+setsebool -P httpd_can_network_connect_db=1 #required for RDS connections from httpd
 
 # set the hostname, if specified
 if [ -n "$USERHOST" ]; then
