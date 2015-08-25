@@ -26,7 +26,7 @@ fi
 # create template
 USERDATA=`mktemp`
 cp ~/scripts/template.utility.user-data.sh $USERDATA
-sed -i s/UtilityInstance/${USERHOST}/g $USERDATA
+sed -i s/UtilityInstance/${USERHOST}/ $USERDATA
 
 # specify machine details
 IMAGE="ami-c7d092f7"
