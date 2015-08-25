@@ -26,7 +26,7 @@ fi
 # create template
 USERDATA=`mktemp`
 cp ~/scripts/template.webtier.user-data.sh $USERDATA
-sed -i s/WebInstance/${USERHOST}/g $USERDATA
+sed -i s/WebInstance/${USERHOST}/ $USERDATA
 
 # specify machine details
 IMAGE="ami-c7d092f7"
