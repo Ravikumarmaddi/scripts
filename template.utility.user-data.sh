@@ -25,7 +25,7 @@ fi
 yum update -y
 
 # install some stuff
-yum install bind-utils nc zip unzip -y
+yum install bind-utils nc telnet nmap sysstat httpd zip unzip -y
 
 # install system stress tool
 curl "http://dl.fedoraproject.org/pub/epel/6/x86_64/stress-1.0.4-4.el6.x86_64.rpm" -o stress-1.0.4-4.el6.x86_64.rpm
