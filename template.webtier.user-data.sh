@@ -47,7 +47,7 @@ chmod 644 /var/www/html/*
 # add our connect string (***use scripts/find.connectrings.sh to locate instances)
 #
 ### OPTIONAL: CONNECT STRING FOR RDS-BACKEND; USER DEFINED ###
-DBCONN="squeezebox.cygbcpnnsuvp.us-west-2.rds.amazonaws.com"
+DBCONN=""
 ###
 #
 DBSHORTNAME=`echo $DBCONN | awk -F . '{print $1}'`
