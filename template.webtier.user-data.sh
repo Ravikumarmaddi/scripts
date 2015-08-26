@@ -44,6 +44,16 @@ rm -rf /var/www/html/*
 aws s3 cp --recursive s3://kpedsawsbucket/html/ /var/www/html
 chmod 644 /var/www/html/*
 
+# add our connect string (***use scripts/find.connectrings.sh to locate instances)
+#
+### OPTIONAL: CONNECT STRING FOR RDS-BACKEND; USER DEFINED ###
+DBCONN=""
+###
+#
+DBSHORTNAME=`echo $DBCONN | awk -F . '{print $1}'`
+sed -i s/${DBCONN}/testdb.conn/ /var/www/html/connect.php
+sed -i s/${DBSHORTNAME}/testdb/ /var/www/html/connect.php
+
 # configure web service to run
 chkconfig httpd on
 service httpd start
