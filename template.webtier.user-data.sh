@@ -47,12 +47,12 @@ chmod 644 /var/www/html/*
 # add our connect string (***use scripts/find.connectrings.sh to locate instances)
 #
 ### OPTIONAL: CONNECT STRING FOR RDS-BACKEND; USER DEFINED ###
-DBCONN=""
+DBCONN="squeezebox.cygbcpnnsuvp.us-west-2.rds.amazonaws.com"
 ###
 #
 DBSHORTNAME=`echo $DBCONN | awk -F . '{print $1}'`
-sed -i s/${DBCONN}/testdb.conn/ /var/www/html/connect.php
-sed -i s/${DBSHORTNAME}/testdb/ /var/www/html/connect.php
+sed -i s/testdb.conn/$DBCONN/ /var/www/html/connect.php
+sed -i s/testdb/$DBSHORTNAME/g /var/www/html/connect.php
 
 # configure web service to run
 chkconfig httpd on
