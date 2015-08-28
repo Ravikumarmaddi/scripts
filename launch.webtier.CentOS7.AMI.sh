@@ -6,7 +6,6 @@ function usage() {
 }
 
 # check params and load variables
-USERHOST=WebInstance
 if [[ $# -gt 3 ]]; then
   usage
   exit
@@ -17,12 +16,15 @@ else
     elif [[ $o == "--help" ]]; then
       usage
       exit
-    elif [[ $o == "$USERHOST" ]]; then
+    elif [[ -n "$USERHOST" ]]; then
       DBCONN=$o
     else
       USERHOST=$o
     fi
   done
+fi
+if [[ -n $USERHOST ]]; then
+  USERHOST=WebInstance
 fi
 
 # create template
