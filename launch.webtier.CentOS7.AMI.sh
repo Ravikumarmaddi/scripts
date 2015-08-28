@@ -68,6 +68,7 @@ aws ec2 create-tags --resources $IID --tags Key=Name,Value=$USERHOST Key=Platfor
 
 # remove the EBS volume on termination
 echo "Configuring EBS volume to delete on termination..."
+sleep 10
 aws ec2 modify-instance-attribute --instance-id $IID --block-device-mappings "[{\"DeviceName\": \"/dev/sda1\",\"Ebs\":{\"DeleteOnTermination\":true}}]"
 
 # register with ELB
