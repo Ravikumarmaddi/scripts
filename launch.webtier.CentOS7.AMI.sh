@@ -29,7 +29,7 @@ fi
 USERDATA=`mktemp`
 cp ~/scripts/template.webtier.user-data.sh $USERDATA
 sed -i s/WebInstance/${USERHOST}/ $USERDATA
-sed -i s/testdb12/${DBCONN}/g
+sed -i s/testdb12/${DBCONN}/g $USERDATA
 
 # specify machine details
 IMAGE="ami-c7d092f7"
