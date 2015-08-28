@@ -6,6 +6,7 @@ function usage() {
 }
 
 # check params and load variables
+USERHOST=""
 if [[ $# -gt 3 ]]; then
   usage
   exit
@@ -23,7 +24,7 @@ else
     fi
   done
 fi
-if [[ -n $USERHOST ]]; then
+if [[ -z $USERHOST ]]; then
   USERHOST=WebInstance
 fi
 
