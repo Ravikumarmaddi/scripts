@@ -2,14 +2,14 @@
 
 # usage function
 function usage() {
-  echo "Usage: `basename $0` [--launch|--help] [hostname]"
+  echo "Usage: `basename $0` [--launch|--help] [hostname] [dbconn]"
 }
 
 # check params and load variables
 USERHOST=WebInstance
-if [[ $# -gt 2 ]]; then
+if [[ $# -gt 3 ]]; then
   usage
-  exit 
+  exit
 else
   for o in $@; do
     if [[ $o == "--launch" ]]; then
@@ -17,6 +17,8 @@ else
     elif [[ $o == "--help" ]]; then
       usage
       exit
+    elif [[ -n "$USERHOST" ]]; then
+      DBCONN=$o
     else
       USERHOST=$o
     fi
@@ -27,6 +29,7 @@ fi
 USERDATA=`mktemp`
 cp ~/scripts/template.webtier.user-data.sh $USERDATA
 sed -i s/WebInstance/${USERHOST}/ $USERDATA
+sed -i s/testdb12/${DBCONN}/g
 
 # specify machine details
 IMAGE="ami-c7d092f7"
@@ -119,4 +122,3 @@ echo
 
 # clean up temp files
 rm -f $OUT $USERDATA
-

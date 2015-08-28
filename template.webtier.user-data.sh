@@ -2,23 +2,28 @@
 
 # usage function
 function usage() {
-  echo "Usage: `basename $0` [--help] | [hostname]"
+  echo "Usage: `basename $0` [--help] | [hostname] [dbconn]"
 }
 
 # check params and load variables
 USERHOST=WebInstance
-if [[ $# -gt 1 ]]; then
+if [[ $# -gt 2 ]]; then
   usage
-  exit 
+  exit
+elif [[ $# -lt 1 ]]; then
+  DBCONN="testdb12"
 else
-  for o in $@; do
-    if [[ $o == "--help" ]]; then
+    if [[ $1 == "--help" ]]; then
       usage
       exit
     else
-      USERHOST=$o
+      USERHOST=$1
+      if [[ $# -eq 2 ]]; then
+        DBCONN=$2
+      else
+        DBCONN="testdb12"
+      fi
     fi
-  done
 fi
 
 # ensure the system is up to date
@@ -44,15 +49,14 @@ rm -rf /var/www/html/*
 aws s3 cp --recursive s3://kpedsawsbucket/html/ /var/www/html
 chmod 644 /var/www/html/*
 
-# add our connect string (***use scripts/find.connectrings.sh to locate instances)
-#
-### OPTIONAL: CONNECT STRING FOR RDS-BACKEND; USER DEFINED ###
-DBCONN=""
-###
-#
-DBSHORTNAME=`echo $DBCONN | awk -F . '{print $1}'`
-sed -i s/testdb.conn/$DBCONN/ /var/www/html/connect.php
-sed -i s/testdb/$DBSHORTNAME/g /var/www/html/connect.php
+# configure DB connection
+if [[ -n "$DBCONN" ]]; then
+  DBSHORTNAME=`echo $DBCONN | awk -F . '{print $1}'`
+  sed -i s/testdb.conn/$DBCONN/ /var/www/html/connect.php
+  sed -i s/testdb/$DBSHORTNAME/g /var/www/html/connect.php
+else
+  rm -f /var/www/html/*.php
+fi
 
 # configure web service to run
 chkconfig httpd on
