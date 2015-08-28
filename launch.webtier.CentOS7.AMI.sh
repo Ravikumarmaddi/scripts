@@ -17,7 +17,7 @@ else
     elif [[ $o == "--help" ]]; then
       usage
       exit
-    elif [[ -n "$USERHOST" ]]; then
+    elif [[ $o == "$USERHOST" ]]; then
       DBCONN=$o
     else
       USERHOST=$o
