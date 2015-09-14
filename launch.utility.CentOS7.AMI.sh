@@ -9,7 +9,7 @@ function usage() {
 USERHOST=UtilityInstance
 if [[ $# -gt 2 ]]; then
   usage
-  exit 
+  exit
 else
   for o in $@; do
     if [[ $o == "--launch" ]]; then
@@ -59,55 +59,61 @@ $COMMAND $EXEC | tee $OUT
 # grab the instance id
 IID=`cat $OUT | grep InstanceId | awk '{print $2}' | sed s/\"//g | sed s/,//g`
 
-# tag the instance
-echo "Tagging instance..."
-aws ec2 create-tags --resources $IID --tags Key=Name,Value=$USERHOST Key=Platform,Value=$PLATFORM Key=Tier,Value=$TIER
+# only continue if we got an instace back
+if [[ -n "$IID" ]]; then
 
-# monitor the instance
-echo -n "Monitoring instance... "
-echo -n "HighCPU... "
-aws cloudwatch put-metric-alarm \
---alarm-name $USERHOST.HighCPU \
---metric-name CPUUtilization \
---namespace AWS/EC2 \
---statistic Average \
---period 300 \
---threshold 80 \
---comparison-operator GreaterThanThreshold \
---dimensions Name=InstanceID,Value=$IID \
---evaluation-periods 1 \
---unit Percent \
---alarm-actions arn:aws:sns:us-west-2:035296091979:administrator
+  # tag the instance
+  echo "Tagging instance..."
+  aws ec2 create-tags --resources $IID --tags Key=Name,Value=$USERHOST Key=Platform,Value=$PLATFORM Key=Tier,Value=$TIER
 
-echo -n "HighOutboundTraffic... "
-aws cloudwatch put-metric-alarm \
---alarm-name $USERHOST.HighOutboundTraffic \
---metric-name NetworkOut \
---namespace AWS/EC2 \
---statistic Average \
---period 300 \
---threshold 50000000 \
---comparison-operator GreaterThanThreshold \
---dimensions Name=InstanceID,Value=$IID \
---evaluation-periods 1 \
---unit Bytes \
---alarm-actions arn:aws:sns:us-west-2:035296091979:administrator
+  # monitor the instance
+  echo -n "Monitoring instance... "
+  echo -n "HighCPU... "
+  aws cloudwatch put-metric-alarm \
+  --alarm-name $USERHOST.HighCPU \
+  --metric-name CPUUtilization \
+  --namespace AWS/EC2 \
+  --statistic Average \
+  --period 300 \
+  --threshold 80 \
+  --comparison-operator GreaterThanThreshold \
+  --dimensions Name=InstanceID,Value=$IID \
+  --evaluation-periods 1 \
+  --unit Percent \
+  --alarm-actions arn:aws:sns:us-west-2:035296091979:administrator
 
-echo -n "StatusCheckFailed... "
-aws cloudwatch put-metric-alarm \
---alarm-name $USERHOST.StatusCheckFailed \
---metric-name StatusCheckFailed \
---namespace AWS/EC2 \
---statistic Maximum \
---period 300 \
---threshold 1 \
---comparison-operator GreaterThanOrEqualToThreshold \
---dimensions Name=InstanceID,Value=$IID \
---evaluation-periods 1 \
---unit Count \
---alarm-actions arn:aws:sns:us-west-2:035296091979:administrator
+  echo -n "HighOutboundTraffic... "
+  aws cloudwatch put-metric-alarm \
+  --alarm-name $USERHOST.HighOutboundTraffic \
+  --metric-name NetworkOut \
+  --namespace AWS/EC2 \
+  --statistic Average \
+  --period 300 \
+  --threshold 50000000 \
+  --comparison-operator GreaterThanThreshold \
+  --dimensions Name=InstanceID,Value=$IID \
+  --evaluation-periods 1 \
+  --unit Bytes \
+  --alarm-actions arn:aws:sns:us-west-2:035296091979:administrator
 
-echo
+  echo -n "StatusCheckFailed... "
+  aws cloudwatch put-metric-alarm \
+  --alarm-name $USERHOST.StatusCheckFailed \
+  --metric-name StatusCheckFailed \
+  --namespace AWS/EC2 \
+  --statistic Maximum \
+  --period 300 \
+  --threshold 1 \
+  --comparison-operator GreaterThanOrEqualToThreshold \
+  --dimensions Name=InstanceID,Value=$IID \
+  --evaluation-periods 1 \
+  --unit Count \
+  --alarm-actions arn:aws:sns:us-west-2:035296091979:administrator
+
+  echo
+else
+  echo "...no instance ID was returned."
+fi
 
 # clean up temp files
 rm -f $OUT $USERDATA
