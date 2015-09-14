@@ -47,7 +47,7 @@ AZONE="us-west-2b"
 KEY="kpedersen_aws_rsa"
 
 # availability zone
-if [[ -n ""$AZONE" ]]; then
+if [[ -n "$AZONE" ]]; then
   PLACEMENT="AvailabilityZone=$AZONE"
 else
   PLACEMENT=""
