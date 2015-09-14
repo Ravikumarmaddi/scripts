@@ -1,7 +1,7 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
   "Resources": {
-    "elbExternalLB": {
+    "ELB": {
       "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
       "Properties": {
         "Subnets": [
@@ -34,7 +34,7 @@
         ],
         "SecurityGroups": [
           {
-            "Ref": "sgExternalLBNetworkAccess"
+            "Ref": "ELBNetworkAccess"
           }
         ],
         "Listeners": [
@@ -48,7 +48,7 @@
         "Tags": [
           {
             "Key": "Name",
-            "Value": "ExternalLB"
+            "Value": "ELB"
           }
         ]
       }
@@ -84,7 +84,7 @@
             "SubnetId": "subnet-edc2bac5",
             "GroupSet": [
               {
-                "Ref": "sgUtilityTierNetworkAccess"
+                "Ref": "UtilityTierNetworkAccess"
               }
             ],
             "AssociatePublicIpAddress": "true"
@@ -123,7 +123,7 @@
             "SubnetId": "subnet-edc2bac5",
             "GroupSet": [
               {
-                "Ref": "sgWebTierNetworkAccess"
+                "Ref": "WebTierNetworkAccess"
               }
             ],
             "AssociatePublicIpAddress": "true"
@@ -162,7 +162,7 @@
             "SubnetId": "subnet-b396a9c7",
             "GroupSet": [
               {
-                "Ref": "sgWebTierNetworkAccess"
+                "Ref": "WebTierNetworkAccess"
               }
             ],
             "AssociatePublicIpAddress": "true"
@@ -170,35 +170,35 @@
         ]
       }
     },
-    "sgDatabaseTierNetworkAccess": {
+    "DatabaseTierNetworkAccess": {
       "Type": "AWS::EC2::SecurityGroup",
       "Properties": {
         "GroupDescription": "access to the database tier",
         "VpcId": "vpc-9ebf5afb"
       }
     },
-    "sgExternalLBNetworkAccess": {
+    "ELBNetworkAccess": {
       "Type": "AWS::EC2::SecurityGroup",
       "Properties": {
         "GroupDescription": "External Load Balancer",
         "VpcId": "vpc-9ebf5afb"
       }
     },
-    "sgWebTierNetworkAccess": {
+    "WebTierNetworkAccess": {
       "Type": "AWS::EC2::SecurityGroup",
       "Properties": {
         "GroupDescription": "access to the web tier",
         "VpcId": "vpc-9ebf5afb"
       }
     },
-    "sgUtilityTierNetworkAccess": {
+    "UtilityTierNetworkAccess": {
       "Type": "AWS::EC2::SecurityGroup",
       "Properties": {
         "GroupDescription": "access to the utility tier",
         "VpcId": "vpc-9ebf5afb"
       }
     },
-    "alarmblueeyesHighCPU": {
+    "blueeyesHighCPU": {
       "Type": "AWS::CloudWatch::Alarm",
       "Properties": {
         "ActionsEnabled": "true",
@@ -220,7 +220,7 @@
         ]
       }
     },
-    "alarmblueeyesHighOutboundTraffic": {
+    "blueeyesHighOutboundTraffic": {
       "Type": "AWS::CloudWatch::Alarm",
       "Properties": {
         "ActionsEnabled": "true",
@@ -242,7 +242,7 @@
         ]
       }
     },
-    "alarmblueeyesStatusCheckFailed": {
+    "blueeyesStatusCheckFailed": {
       "Type": "AWS::CloudWatch::Alarm",
       "Properties": {
         "ActionsEnabled": "true",
@@ -265,7 +265,7 @@
         ]
       }
     },
-    "alarmboristhespiderHighCPU": {
+    "boristhespiderHighCPU": {
       "Type": "AWS::CloudWatch::Alarm",
       "Properties": {
         "ActionsEnabled": "true",
@@ -287,7 +287,7 @@
         ]
       }
     },
-    "alarmboristhespiderHighOutboundTraffic": {
+    "boristhespiderHighOutboundTraffic": {
       "Type": "AWS::CloudWatch::Alarm",
       "Properties": {
         "ActionsEnabled": "true",
@@ -309,7 +309,7 @@
         ]
       }
     },
-    "alarmboristhespiderStatusCheckFailed": {
+    "boristhespiderStatusCheckFailed": {
       "Type": "AWS::CloudWatch::Alarm",
       "Properties": {
         "ActionsEnabled": "true",
@@ -331,7 +331,7 @@
         ]
       }
     },
-    "alarmtheseekerHighCPU": {
+    "theseekerHighCPU": {
       "Type": "AWS::CloudWatch::Alarm",
       "Properties": {
         "ActionsEnabled": "true",
@@ -353,7 +353,7 @@
         ]
       }
     },
-    "alarmtheseekerHighOutboundTraffic": {
+    "theseekerHighOutboundTraffic": {
       "Type": "AWS::CloudWatch::Alarm",
       "Properties": {
         "ActionsEnabled": "true",
@@ -375,7 +375,7 @@
         ]
       }
     },
-    "alarmtheseekerStatusCheckFailed": {
+    "theseekerStatusCheckFailed": {
       "Type": "AWS::CloudWatch::Alarm",
       "Properties": {
         "ActionsEnabled": "true",
@@ -402,13 +402,13 @@
       "Type": "AWS::EC2::SecurityGroupIngress",
       "Properties": {
         "GroupId": {
-          "Ref": "sgDatabaseTierNetworkAccess"
+          "Ref": "DatabaseTierNetworkAccess"
         },
         "IpProtocol": "tcp",
         "FromPort": "3306",
         "ToPort": "3306",
         "SourceSecurityGroupId": {
-          "Ref": "sgWebTierNetworkAccess"
+          "Ref": "WebTierNetworkAccess"
         },
         "SourceSecurityGroupOwnerId": "035296091979"
       }
@@ -417,7 +417,7 @@
       "Type": "AWS::EC2::SecurityGroupIngress",
       "Properties": {
         "GroupId": {
-          "Ref": "sgDatabaseTierNetworkAccess"
+          "Ref": "DatabaseTierNetworkAccess"
         },
         "IpProtocol": "tcp",
         "FromPort": "3306",
@@ -429,13 +429,13 @@
       "Type": "AWS::EC2::SecurityGroupIngress",
       "Properties": {
         "GroupId": {
-          "Ref": "sgDatabaseTierNetworkAccess"
+          "Ref": "DatabaseTierNetworkAccess"
         },
         "IpProtocol": "tcp",
         "FromPort": "3306",
         "ToPort": "3306",
         "SourceSecurityGroupId": {
-          "Ref": "sgUtilityTierNetworkAccess"
+          "Ref": "UtilityTierNetworkAccess"
         },
         "SourceSecurityGroupOwnerId": "035296091979"
       }
@@ -444,7 +444,7 @@
       "Type": "AWS::EC2::SecurityGroupIngress",
       "Properties": {
         "GroupId": {
-          "Ref": "sgExternalLBNetworkAccess"
+          "Ref": "ELBNetworkAccess"
         },
         "IpProtocol": "tcp",
         "FromPort": "80",
@@ -456,13 +456,13 @@
       "Type": "AWS::EC2::SecurityGroupIngress",
       "Properties": {
         "GroupId": {
-          "Ref": "sgWebTierNetworkAccess"
+          "Ref": "WebTierNetworkAccess"
         },
         "IpProtocol": "tcp",
         "FromPort": "22",
         "ToPort": "22",
         "SourceSecurityGroupId": {
-          "Ref": "sgUtilityTierNetworkAccess"
+          "Ref": "UtilityTierNetworkAccess"
         },
         "SourceSecurityGroupOwnerId": "035296091979"
       }
@@ -471,7 +471,7 @@
       "Type": "AWS::EC2::SecurityGroupIngress",
       "Properties": {
         "GroupId": {
-          "Ref": "sgWebTierNetworkAccess"
+          "Ref": "WebTierNetworkAccess"
         },
         "IpProtocol": "tcp",
         "FromPort": "22",
@@ -483,13 +483,13 @@
       "Type": "AWS::EC2::SecurityGroupIngress",
       "Properties": {
         "GroupId": {
-          "Ref": "sgWebTierNetworkAccess"
+          "Ref": "WebTierNetworkAccess"
         },
         "IpProtocol": "tcp",
         "FromPort": "80",
         "ToPort": "80",
         "SourceSecurityGroupId": {
-          "Ref": "sgExternalLBNetworkAccess"
+          "Ref": "ExternalLBNetworkAccess"
         },
         "SourceSecurityGroupOwnerId": "035296091979"
       }
@@ -498,7 +498,7 @@
       "Type": "AWS::EC2::SecurityGroupIngress",
       "Properties": {
         "GroupId": {
-          "Ref": "sgUtilityTierNetworkAccess"
+          "Ref": "UtilityTierNetworkAccess"
         },
         "IpProtocol": "tcp",
         "FromPort": "22",
@@ -510,7 +510,7 @@
       "Type": "AWS::EC2::SecurityGroupEgress",
       "Properties": {
         "GroupId": {
-          "Ref": "sgDatabaseTierNetworkAccess"
+          "Ref": "DatabaseTierNetworkAccess"
         },
         "IpProtocol": "-1",
         "CidrIp": "0.0.0.0/0"
@@ -520,7 +520,7 @@
       "Type": "AWS::EC2::SecurityGroupEgress",
       "Properties": {
         "GroupId": {
-          "Ref": "sgExternalLBNetworkAccess"
+          "Ref": "ExternalLBNetworkAccess"
         },
         "IpProtocol": "-1",
         "CidrIp": "0.0.0.0/0"
@@ -530,7 +530,7 @@
       "Type": "AWS::EC2::SecurityGroupEgress",
       "Properties": {
         "GroupId": {
-          "Ref": "sgWebTierNetworkAccess"
+          "Ref": "WebTierNetworkAccess"
         },
         "IpProtocol": "-1",
         "CidrIp": "0.0.0.0/0"
@@ -540,7 +540,7 @@
       "Type": "AWS::EC2::SecurityGroupEgress",
       "Properties": {
         "GroupId": {
-          "Ref": "sgUtilityTierNetworkAccess"
+          "Ref": "UtilityTierNetworkAccess"
         },
         "IpProtocol": "-1",
         "CidrIp": "0.0.0.0/0"
@@ -549,9 +549,9 @@
   },
   "Description": "web tier test",
   "Outputs": {
-    "elbExternalLBName": {
+    "ELBName": {
       "Value": {
-        "Ref": "elbExternalLB"
+        "Ref": "ELB"
       }
     },
     "theseekerId": {
