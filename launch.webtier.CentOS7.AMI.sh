@@ -43,8 +43,15 @@ TYPE="t2.micro"
 GROUP="WebTierNetworkAccess"
 ROLE="S3ReadOnlyAccess"
 REGION="us-west-2"
-AZONE=""
+AZONE="us-west-2b"
 KEY="kpedersen_aws_rsa"
+
+# availability zone
+if [[ -n ""$AZONE" ]]; then
+  PLACEMENT="AvailabilityZone=$AZONE"
+else
+  PLACEMENT=""
+fi
 
 # construct command
 if [[ $LAUNCH == TRUE ]]; then
@@ -56,7 +63,7 @@ else
 fi
 
 # construct parameters
-EXEC="--image-id $IMAGE --key-name $KEY --user-data $SCRIPT --instance-type $TYPE --security-groups $GROUP --iam-instance-profile Name=$ROLE --region $REGION"
+EXEC="--image-id $IMAGE --key-name $KEY --user-data $SCRIPT --instance-type $TYPE --security-groups $GROUP --iam-instance-profile Name=$ROLE --region $REGION --placement $PLACEMENT"
 
 # execute launch command with parameters
 OUT=`mktemp`
