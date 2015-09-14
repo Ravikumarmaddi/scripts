@@ -43,6 +43,7 @@ TYPE="t2.micro"
 GROUP="WebTierNetworkAccess"
 ROLE="S3ReadOnlyAccess"
 REGION="us-west-2"
+AZONE=""
 KEY="kpedersen_aws_rsa"
 
 # construct command
