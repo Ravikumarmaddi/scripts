@@ -5,9 +5,9 @@
       "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
       "Properties": {
         "Subnets": [
-          "subnet-09a8f74f",
-          "subnet-860419e4",
-          "subnet-c9615dbd"
+          "subnet-edc2bac5",
+          "subnet-b396a9c7",
+          "subnet-62683024"
         ],
         "HealthCheck": {
           "HealthyThreshold": "2",
@@ -59,7 +59,7 @@
         "DisableApiTermination": "false",
         "InstanceInitiatedShutdownBehavior": "stop",
         "IamInstanceProfile": "arn:aws:iam::035296091979:instance-profile/S3FullAccess",
-        "ImageId": "ami-c7d092f7",
+        "ImageId": "ami-96a818fe",
         "InstanceType": "t2.micro",
         "KeyName": "kpedersen_aws_rsa",
         "Monitoring": "false",
@@ -81,7 +81,7 @@
           {
             "DeleteOnTermination": "true",
             "DeviceIndex": 0,
-            "SubnetId": "subnet-c9615dbd",
+            "SubnetId": "subnet-edc2bac5",
             "PrivateIpAddresses": [
               {
                 "PrivateIpAddress": "172.31.23.74",
@@ -104,7 +104,7 @@
         "DisableApiTermination": "false",
         "InstanceInitiatedShutdownBehavior": "stop",
         "IamInstanceProfile": "arn:aws:iam::035296091979:instance-profile/S3ReadOnlyAccess",
-        "ImageId": "ami-c7d092f7",
+        "ImageId": "ami-96a818fe",
         "InstanceType": "t2.micro",
         "KeyName": "kpedersen_aws_rsa",
         "Monitoring": "false",
@@ -126,7 +126,7 @@
           {
             "DeleteOnTermination": "true",
             "DeviceIndex": 0,
-            "SubnetId": "subnet-c9615dbd",
+            "SubnetId": "subnet-edc2bac5",
             "PrivateIpAddresses": [
               {
                 "PrivateIpAddress": "172.31.29.61",
@@ -149,7 +149,7 @@
         "DisableApiTermination": "false",
         "InstanceInitiatedShutdownBehavior": "stop",
         "IamInstanceProfile": "arn:aws:iam::035296091979:instance-profile/S3ReadOnlyAccess",
-        "ImageId": "ami-c7d092f7",
+        "ImageId": "ami-96a818fe",
         "InstanceType": "t2.micro",
         "KeyName": "kpedersen_aws_rsa",
         "Monitoring": "false",
@@ -171,7 +171,7 @@
           {
             "DeleteOnTermination": "true",
             "DeviceIndex": 0,
-            "SubnetId": "subnet-860419e4",
+            "SubnetId": "subnet-b396a9c7",
             "PrivateIpAddresses": [
               {
                 "PrivateIpAddress": "172.31.33.34",
@@ -192,66 +192,28 @@
       "Type": "AWS::EC2::SecurityGroup",
       "Properties": {
         "GroupDescription": "access to the database tier",
-        "VpcId": "vpc-0a170568"
+        "VpcId": "vpc-9ebf5afb"
       }
     },
     "sgExternalLBNetworkAccess": {
       "Type": "AWS::EC2::SecurityGroup",
       "Properties": {
         "GroupDescription": "External Load Balancer",
-        "VpcId": "vpc-0a170568"
+        "VpcId": "vpc-9ebf5afb"
       }
     },
     "sgWebTierNetworkAccess": {
       "Type": "AWS::EC2::SecurityGroup",
       "Properties": {
         "GroupDescription": "access to the web tier",
-        "VpcId": "vpc-0a170568"
+        "VpcId": "vpc-9ebf5afb"
       }
     },
     "sgUtilityTierNetworkAccess": {
       "Type": "AWS::EC2::SecurityGroup",
       "Properties": {
         "GroupDescription": "access to the utility tier",
-        "VpcId": "vpc-0a170568"
-      }
-    },
-    "snspolicyadministrator": {
-      "Type": "AWS::SNS::TopicPolicy",
-      "Properties": {
-        "Topics": [
-          "administrator"
-        ],
-        "PolicyDocument": {
-          "Version": "2008-10-17",
-          "Id": "__default_policy_ID",
-          "Statement": [
-            {
-              "Sid": "__default_statement_ID",
-              "Effect": "Allow",
-              "Principal": {
-                "AWS": "*"
-              },
-              "Action": [
-                "SNS:Subscribe",
-                "SNS:ListSubscriptionsByTopic",
-                "SNS:DeleteTopic",
-                "SNS:GetTopicAttributes",
-                "SNS:Publish",
-                "SNS:RemovePermission",
-                "SNS:AddPermission",
-                "SNS:Receive",
-                "SNS:SetTopicAttributes"
-              ],
-              "Resource": "administrator",
-              "Condition": {
-                "StringEquals": {
-                  "AWS:SourceOwner": "035296091979"
-                }
-              }
-            }
-          ]
-        }
+        "VpcId": "vpc-9ebf5afb"
       }
     },
     "alarmblueeyesHighCPU": {
@@ -266,12 +228,12 @@
         "Statistic": "Average",
         "Threshold": "80.0",
         "AlarmActions": [
-          "arn:aws:sns:us-west-2:035296091979:administrator"
+          "arn:aws:sns:us-east-1:035296091979:administrator-us-east-1"
         ],
         "Dimensions": [
           {
             "Name": "InstanceId",
-            "Value": "i-812c5947"
+            "Value": { "Ref": "blueeyes" }
           }
         ]
       }
@@ -288,12 +250,12 @@
         "Statistic": "Average",
         "Threshold": "50000000.0",
         "AlarmActions": [
-          "arn:aws:sns:us-west-2:035296091979:administrator"
+          "arn:aws:sns:us-east-1:035296091979:administrator-us-east-1"
         ],
         "Dimensions": [
           {
             "Name": "InstanceId",
-            "Value": "i-812c5947"
+            "Value": { "Ref": "blueeyes" }
           }
         ]
       }
@@ -311,12 +273,12 @@
         "Statistic": "Maximum",
         "Threshold": "1.0",
         "AlarmActions": [
-          "arn:aws:sns:us-west-2:035296091979:administrator"
+          "arn:aws:sns:us-east-1:035296091979:administrator-us-east-1"
         ],
         "Dimensions": [
           {
             "Name": "InstanceId",
-            "Value": "i-812c5947"
+            "Value": { "Ref": "blueeyes" }
           }
         ]
       }
@@ -333,12 +295,12 @@
         "Statistic": "Average",
         "Threshold": "80.0",
         "AlarmActions": [
-          "arn:aws:sns:us-west-2:035296091979:administrator"
+          "arn:aws:sns:us-east-1:035296091979:administrator-us-east-1"
         ],
         "Dimensions": [
           {
             "Name": "InstanceId",
-            "Value": "i-43301186"
+            "Value": { "Ref": "boristhespider" }
           }
         ]
       }
@@ -355,12 +317,12 @@
         "Statistic": "Average",
         "Threshold": "50000000.0",
         "AlarmActions": [
-          "arn:aws:sns:us-west-2:035296091979:administrator"
+          "arn:aws:sns:us-east-1:035296091979:administrator-us-east-1"
         ],
         "Dimensions": [
           {
             "Name": "InstanceId",
-            "Value": "i-43301186"
+            "Value": { "Ref": "boristhespider" }
           }
         ]
       }
@@ -377,12 +339,12 @@
         "Statistic": "Average",
         "Threshold": "1.0",
         "AlarmActions": [
-          "arn:aws:sns:us-west-2:035296091979:administrator"
+          "arn:aws:sns:us-east-1:035296091979:administrator-us-east-1"
         ],
         "Dimensions": [
           {
             "Name": "InstanceId",
-            "Value": "i-43301186"
+            "Value": { "Ref": "boristhespider" }
           }
         ]
       }
@@ -399,12 +361,12 @@
         "Statistic": "Average",
         "Threshold": "80.0",
         "AlarmActions": [
-          "arn:aws:sns:us-west-2:035296091979:administrator"
+          "arn:aws:sns:us-east-1:035296091979:administrator-us-east-1"
         ],
         "Dimensions": [
           {
             "Name": "InstanceId",
-            "Value": "i-4ad4be8c"
+            "Value": { "Ref": "theseeker" }
           }
         ]
       }
@@ -421,12 +383,12 @@
         "Statistic": "Average",
         "Threshold": "50000000.0",
         "AlarmActions": [
-          "arn:aws:sns:us-west-2:035296091979:administrator"
+          "arn:aws:sns:us-east-1:035296091979:administrator-us-east-1"
         ],
         "Dimensions": [
           {
             "Name": "InstanceId",
-            "Value": "i-4ad4be8c"
+            "Value": { "Ref": "theseeker" }
           }
         ]
       }
@@ -444,12 +406,12 @@
         "Statistic": "Maximum",
         "Threshold": "1.0",
         "AlarmActions": [
-          "arn:aws:sns:us-west-2:035296091979:administrator"
+          "arn:aws:sns:us-east-1:035296091979:administrator-us-east-1"
         ],
         "Dimensions": [
           {
             "Name": "InstanceId",
-            "Value": "i-4ad4be8c"
+            "Value": { "Ref": "theseeker" }
           }
         ]
       }
