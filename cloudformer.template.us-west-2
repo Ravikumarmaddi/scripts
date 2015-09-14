@@ -1,0 +1,619 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Resources": {
+    "elbExternalLB": {
+      "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
+      "Properties": {
+        "Subnets": [
+          "subnet-09a8f74f",
+          "subnet-860419e4",
+          "subnet-c9615dbd"
+        ],
+        "HealthCheck": {
+          "HealthyThreshold": "2",
+          "Interval": "30",
+          "Target": "HTTP:80/healthcheck.html",
+          "Timeout": "5",
+          "UnhealthyThreshold": "2"
+        },
+        "ConnectionDrainingPolicy": {
+          "Enabled": "true",
+          "Timeout": "300"
+        },
+        "ConnectionSettings": {
+          "IdleTimeout": "60"
+        },
+        "CrossZone": "true",
+        "Instances": [
+          {
+            "Ref": "boristhespider"
+          },
+          {
+            "Ref": "blueeyes"
+          }
+        ],
+        "SecurityGroups": [
+          {
+            "Ref": "sgExternalLBNetworkAccess"
+          }
+        ],
+        "Listeners": [
+          {
+            "InstancePort": "80",
+            "LoadBalancerPort": "80",
+            "Protocol": "HTTP",
+            "InstanceProtocol": "HTTP"
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "ExternalLB"
+          }
+        ]
+      }
+    },
+    "theseeker": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "DisableApiTermination": "false",
+        "InstanceInitiatedShutdownBehavior": "stop",
+        "IamInstanceProfile": "arn:aws:iam::035296091979:instance-profile/S3FullAccess",
+        "ImageId": "ami-c7d092f7",
+        "InstanceType": "t2.micro",
+        "KeyName": "kpedersen_aws_rsa",
+        "Monitoring": "false",
+        "Tags": [
+          {
+            "Key": "Platform",
+            "Value": "CentOS7"
+          },
+          {
+            "Key": "Tier",
+            "Value": "Utility"
+          },
+          {
+            "Key": "Name",
+            "Value": "theseeker"
+          }
+        ],
+        "NetworkInterfaces": [
+          {
+            "DeleteOnTermination": "true",
+            "DeviceIndex": 0,
+            "SubnetId": "subnet-c9615dbd",
+            "PrivateIpAddresses": [
+              {
+                "PrivateIpAddress": "172.31.23.74",
+                "Primary": "true"
+              }
+            ],
+            "GroupSet": [
+              {
+                "Ref": "sgUtilityTierNetworkAccess"
+              }
+            ],
+            "AssociatePublicIpAddress": "true"
+          }
+        ]
+      }
+    },
+    "blueeyes": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "DisableApiTermination": "false",
+        "InstanceInitiatedShutdownBehavior": "stop",
+        "IamInstanceProfile": "arn:aws:iam::035296091979:instance-profile/S3ReadOnlyAccess",
+        "ImageId": "ami-c7d092f7",
+        "InstanceType": "t2.micro",
+        "KeyName": "kpedersen_aws_rsa",
+        "Monitoring": "false",
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "blueeyes"
+          },
+          {
+            "Key": "Platform",
+            "Value": "CentOS7"
+          },
+          {
+            "Key": "Tier",
+            "Value": "Web"
+          }
+        ],
+        "NetworkInterfaces": [
+          {
+            "DeleteOnTermination": "true",
+            "DeviceIndex": 0,
+            "SubnetId": "subnet-c9615dbd",
+            "PrivateIpAddresses": [
+              {
+                "PrivateIpAddress": "172.31.29.61",
+                "Primary": "true"
+              }
+            ],
+            "GroupSet": [
+              {
+                "Ref": "sgWebTierNetworkAccess"
+              }
+            ],
+            "AssociatePublicIpAddress": "true"
+          }
+        ]
+      }
+    },
+    "boristhespider": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "DisableApiTermination": "false",
+        "InstanceInitiatedShutdownBehavior": "stop",
+        "IamInstanceProfile": "arn:aws:iam::035296091979:instance-profile/S3ReadOnlyAccess",
+        "ImageId": "ami-c7d092f7",
+        "InstanceType": "t2.micro",
+        "KeyName": "kpedersen_aws_rsa",
+        "Monitoring": "false",
+        "Tags": [
+          {
+            "Key": "Platform",
+            "Value": "CentOS7"
+          },
+          {
+            "Key": "Tier",
+            "Value": "Web"
+          },
+          {
+            "Key": "Name",
+            "Value": "boristhespider"
+          }
+        ],
+        "NetworkInterfaces": [
+          {
+            "DeleteOnTermination": "true",
+            "DeviceIndex": 0,
+            "SubnetId": "subnet-860419e4",
+            "PrivateIpAddresses": [
+              {
+                "PrivateIpAddress": "172.31.33.34",
+                "Primary": "true"
+              }
+            ],
+            "GroupSet": [
+              {
+                "Ref": "sgWebTierNetworkAccess"
+              }
+            ],
+            "AssociatePublicIpAddress": "true"
+          }
+        ]
+      }
+    },
+    "sgDatabaseTierNetworkAccess": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "access to the database tier",
+        "VpcId": "vpc-0a170568"
+      }
+    },
+    "sgExternalLBNetworkAccess": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "External Load Balancer",
+        "VpcId": "vpc-0a170568"
+      }
+    },
+    "sgWebTierNetworkAccess": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "access to the web tier",
+        "VpcId": "vpc-0a170568"
+      }
+    },
+    "sgUtilityTierNetworkAccess": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "access to the utility tier",
+        "VpcId": "vpc-0a170568"
+      }
+    },
+    "snspolicyadministrator": {
+      "Type": "AWS::SNS::TopicPolicy",
+      "Properties": {
+        "Topics": [
+          "administrator"
+        ],
+        "PolicyDocument": {
+          "Version": "2008-10-17",
+          "Id": "__default_policy_ID",
+          "Statement": [
+            {
+              "Sid": "__default_statement_ID",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": "*"
+              },
+              "Action": [
+                "SNS:Subscribe",
+                "SNS:ListSubscriptionsByTopic",
+                "SNS:DeleteTopic",
+                "SNS:GetTopicAttributes",
+                "SNS:Publish",
+                "SNS:RemovePermission",
+                "SNS:AddPermission",
+                "SNS:Receive",
+                "SNS:SetTopicAttributes"
+              ],
+              "Resource": "administrator",
+              "Condition": {
+                "StringEquals": {
+                  "AWS:SourceOwner": "035296091979"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "alarmblueeyesHighCPU": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": "true",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "EvaluationPeriods": "1",
+        "MetricName": "CPUUtilization",
+        "Namespace": "AWS/EC2",
+        "Period": "300",
+        "Statistic": "Average",
+        "Threshold": "80.0",
+        "AlarmActions": [
+          "arn:aws:sns:us-west-2:035296091979:administrator"
+        ],
+        "Dimensions": [
+          {
+            "Name": "InstanceId",
+            "Value": "i-812c5947"
+          }
+        ]
+      }
+    },
+    "alarmblueeyesHighOutboundTraffic": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": "true",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "EvaluationPeriods": "1",
+        "MetricName": "NetworkOut",
+        "Namespace": "AWS/EC2",
+        "Period": "300",
+        "Statistic": "Average",
+        "Threshold": "50000000.0",
+        "AlarmActions": [
+          "arn:aws:sns:us-west-2:035296091979:administrator"
+        ],
+        "Dimensions": [
+          {
+            "Name": "InstanceId",
+            "Value": "i-812c5947"
+          }
+        ]
+      }
+    },
+    "alarmblueeyesStatusCheckFailed": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": "true",
+        "AlarmDescription": "Created from EC2 Console",
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "EvaluationPeriods": "2",
+        "MetricName": "StatusCheckFailed",
+        "Namespace": "AWS/EC2",
+        "Period": "60",
+        "Statistic": "Maximum",
+        "Threshold": "1.0",
+        "AlarmActions": [
+          "arn:aws:sns:us-west-2:035296091979:administrator"
+        ],
+        "Dimensions": [
+          {
+            "Name": "InstanceId",
+            "Value": "i-812c5947"
+          }
+        ]
+      }
+    },
+    "alarmboristhespiderHighCPU": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": "true",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "EvaluationPeriods": "1",
+        "MetricName": "CPUUtilization",
+        "Namespace": "AWS/EC2",
+        "Period": "300",
+        "Statistic": "Average",
+        "Threshold": "80.0",
+        "AlarmActions": [
+          "arn:aws:sns:us-west-2:035296091979:administrator"
+        ],
+        "Dimensions": [
+          {
+            "Name": "InstanceId",
+            "Value": "i-43301186"
+          }
+        ]
+      }
+    },
+    "alarmboristhespiderHighOutboundTraffic": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": "true",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "EvaluationPeriods": "1",
+        "MetricName": "NetworkOut",
+        "Namespace": "AWS/EC2",
+        "Period": "300",
+        "Statistic": "Average",
+        "Threshold": "50000000.0",
+        "AlarmActions": [
+          "arn:aws:sns:us-west-2:035296091979:administrator"
+        ],
+        "Dimensions": [
+          {
+            "Name": "InstanceId",
+            "Value": "i-43301186"
+          }
+        ]
+      }
+    },
+    "alarmboristhespiderStatusCheckFailed": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": "true",
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "EvaluationPeriods": "2",
+        "MetricName": "StatusCheckFailed",
+        "Namespace": "AWS/EC2",
+        "Period": "60",
+        "Statistic": "Average",
+        "Threshold": "1.0",
+        "AlarmActions": [
+          "arn:aws:sns:us-west-2:035296091979:administrator"
+        ],
+        "Dimensions": [
+          {
+            "Name": "InstanceId",
+            "Value": "i-43301186"
+          }
+        ]
+      }
+    },
+    "alarmtheseekerHighCPU": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": "true",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "EvaluationPeriods": "1",
+        "MetricName": "CPUUtilization",
+        "Namespace": "AWS/EC2",
+        "Period": "300",
+        "Statistic": "Average",
+        "Threshold": "80.0",
+        "AlarmActions": [
+          "arn:aws:sns:us-west-2:035296091979:administrator"
+        ],
+        "Dimensions": [
+          {
+            "Name": "InstanceId",
+            "Value": "i-4ad4be8c"
+          }
+        ]
+      }
+    },
+    "alarmtheseekerHighOutboundTraffic": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": "true",
+        "ComparisonOperator": "GreaterThanThreshold",
+        "EvaluationPeriods": "1",
+        "MetricName": "NetworkOut",
+        "Namespace": "AWS/EC2",
+        "Period": "300",
+        "Statistic": "Average",
+        "Threshold": "50000000.0",
+        "AlarmActions": [
+          "arn:aws:sns:us-west-2:035296091979:administrator"
+        ],
+        "Dimensions": [
+          {
+            "Name": "InstanceId",
+            "Value": "i-4ad4be8c"
+          }
+        ]
+      }
+    },
+    "alarmtheseekerStatusCheckFailed": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "ActionsEnabled": "true",
+        "AlarmDescription": "Created from EC2 Console",
+        "ComparisonOperator": "GreaterThanOrEqualToThreshold",
+        "EvaluationPeriods": "2",
+        "MetricName": "StatusCheckFailed",
+        "Namespace": "AWS/EC2",
+        "Period": "60",
+        "Statistic": "Maximum",
+        "Threshold": "1.0",
+        "AlarmActions": [
+          "arn:aws:sns:us-west-2:035296091979:administrator"
+        ],
+        "Dimensions": [
+          {
+            "Name": "InstanceId",
+            "Value": "i-4ad4be8c"
+          }
+        ]
+      }
+    },
+    "ingress1": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "sgDatabaseTierNetworkAccess"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "3306",
+        "ToPort": "3306",
+        "SourceSecurityGroupId": {
+          "Ref": "sgWebTierNetworkAccess"
+        },
+        "SourceSecurityGroupOwnerId": "035296091979"
+      }
+    },
+    "ingress2": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "sgDatabaseTierNetworkAccess"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "3306",
+        "ToPort": "3306",
+        "CidrIp": "64.228.192.182/32"
+      }
+    },
+    "ingress3": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "sgDatabaseTierNetworkAccess"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "3306",
+        "ToPort": "3306",
+        "SourceSecurityGroupId": {
+          "Ref": "sgUtilityTierNetworkAccess"
+        },
+        "SourceSecurityGroupOwnerId": "035296091979"
+      }
+    },
+    "ingress4": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "sgExternalLBNetworkAccess"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "80",
+        "ToPort": "80",
+        "CidrIp": "0.0.0.0/0"
+      }
+    },
+    "ingress5": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "sgWebTierNetworkAccess"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "22",
+        "ToPort": "22",
+        "SourceSecurityGroupId": {
+          "Ref": "sgUtilityTierNetworkAccess"
+        },
+        "SourceSecurityGroupOwnerId": "035296091979"
+      }
+    },
+    "ingress6": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "sgWebTierNetworkAccess"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "22",
+        "ToPort": "22",
+        "CidrIp": "64.228.192.182/32"
+      }
+    },
+    "ingress7": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "sgWebTierNetworkAccess"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "80",
+        "ToPort": "80",
+        "SourceSecurityGroupId": {
+          "Ref": "sgExternalLBNetworkAccess"
+        },
+        "SourceSecurityGroupOwnerId": "035296091979"
+      }
+    },
+    "ingress8": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "sgUtilityTierNetworkAccess"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": "22",
+        "ToPort": "22",
+        "CidrIp": "64.228.193.182/32"
+      }
+    },
+    "egress1": {
+      "Type": "AWS::EC2::SecurityGroupEgress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "sgDatabaseTierNetworkAccess"
+        },
+        "IpProtocol": "-1",
+        "CidrIp": "0.0.0.0/0"
+      }
+    },
+    "egress2": {
+      "Type": "AWS::EC2::SecurityGroupEgress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "sgExternalLBNetworkAccess"
+        },
+        "IpProtocol": "-1",
+        "CidrIp": "0.0.0.0/0"
+      }
+    },
+    "egress3": {
+      "Type": "AWS::EC2::SecurityGroupEgress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "sgWebTierNetworkAccess"
+        },
+        "IpProtocol": "-1",
+        "CidrIp": "0.0.0.0/0"
+      }
+    },
+    "egress4": {
+      "Type": "AWS::EC2::SecurityGroupEgress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "sgUtilityTierNetworkAccess"
+        },
+        "IpProtocol": "-1",
+        "CidrIp": "0.0.0.0/0"
+      }
+    }
+  },
+  "Description": "web tier test",
+  "Outputs": {
+    "elbExternalLBName": {
+      "Value": {
+        "Ref": "elbExternalLB"
+      }
+    },
+    "theseekerId": {
+      "Value": {
+        "Ref": "theseeker"
+      }
+    }
+  }
+}

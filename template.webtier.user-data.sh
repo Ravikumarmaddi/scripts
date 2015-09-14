@@ -11,7 +11,7 @@ if [[ $# -gt 2 ]]; then
   usage
   exit
 elif [[ $# -lt 1 ]]; then
-  DBCONN="testdb12"
+  DBCONN=""
 else
     if [[ $1 == "--help" ]]; then
       usage
@@ -21,7 +21,7 @@ else
       if [[ $# -eq 2 ]]; then
         DBCONN=$2
       else
-        DBCONN="testdb12"
+        DBCONN=""
       fi
     fi
 fi
