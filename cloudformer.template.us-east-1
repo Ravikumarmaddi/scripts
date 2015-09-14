@@ -82,12 +82,6 @@
             "DeleteOnTermination": "true",
             "DeviceIndex": 0,
             "SubnetId": "subnet-edc2bac5",
-            "PrivateIpAddresses": [
-              {
-                "PrivateIpAddress": "172.31.23.74",
-                "Primary": "true"
-              }
-            ],
             "GroupSet": [
               {
                 "Ref": "sgUtilityTierNetworkAccess"
@@ -127,12 +121,6 @@
             "DeleteOnTermination": "true",
             "DeviceIndex": 0,
             "SubnetId": "subnet-edc2bac5",
-            "PrivateIpAddresses": [
-              {
-                "PrivateIpAddress": "172.31.29.61",
-                "Primary": "true"
-              }
-            ],
             "GroupSet": [
               {
                 "Ref": "sgWebTierNetworkAccess"
@@ -172,12 +160,6 @@
             "DeleteOnTermination": "true",
             "DeviceIndex": 0,
             "SubnetId": "subnet-b396a9c7",
-            "PrivateIpAddresses": [
-              {
-                "PrivateIpAddress": "172.31.33.34",
-                "Primary": "true"
-              }
-            ],
             "GroupSet": [
               {
                 "Ref": "sgWebTierNetworkAccess"
