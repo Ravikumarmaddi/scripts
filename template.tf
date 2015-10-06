@@ -8,3 +8,7 @@ resource "aws_instance" "ubuntu" {
   ami = "ami-d34032e3"
   instance_type = "t2.micro"
 }
+
+resource "aws_eip" "ip" {
+  instance = "${aws_instance.ubuntu.id}"
+}
