@@ -5,7 +5,7 @@ provider "aws" {
 }
 
 resource "aws_instance" "ubuntu" {
-  ami = "ami-d34032e3"
+  ami = "${lookup(var.amis, var.region)}"
   instance_type = "t2.micro"
 }
 
