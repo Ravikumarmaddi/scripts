@@ -12,3 +12,7 @@ resource "aws_instance" "ubuntu" {
 resource "aws_eip" "ip" {
   instance = "${aws_instance.ubuntu.id}"
 }
+
+output "ip" {
+  value = "${aws_eip.ip.public_ip}"
+}
