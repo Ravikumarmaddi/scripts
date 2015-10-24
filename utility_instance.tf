@@ -6,7 +6,7 @@ provider "aws" {
 
 resource "aws_instance" "utility" {
   key_name = "kpedersen_aws_rsa"
-  ami = "${var.amis}"
+  ami = "${lookup(var.amis, var.region)}"
   instance_type = "t2.micro"
   tags {
     Name = "${var.instance_name}"
