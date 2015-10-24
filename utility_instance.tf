@@ -10,6 +10,7 @@ resource "aws_instance" "utility" {
   instance_type = "t2.micro"
   tags {
     Name = "${var.instance_name}"
+    Platform = "${var.amis.platform}"
     Tier = "${var.instance_tier}"
   }
   user_data = "template.utility.user-data.sh"
