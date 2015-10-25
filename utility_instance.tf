@@ -1,9 +1,3 @@
-provider "aws" {
-  access_key = "${var.access_key}"
-  secret_key = "${var.secret_key}"
-  region = "${var.region}"
-}
-
 resource "aws_instance" "utility" {
   key_name = "kpedersen_aws_rsa"
   ami = "${lookup(var.amis, var.region)}"
@@ -11,18 +5,18 @@ resource "aws_instance" "utility" {
   vpc_security_group_ids = ["${aws_security_group.sg_utility_access.id}"]
 
   tags {
-    Name = "${var.instance_name}"
+    Name = "${lookup(var.instance_name, "utility")}"
     Platform = "${var.amis.platform}"
-    Tier = "${var.instance_tier}"
+    Tier = "utility"
   }
 
-  user_data = "template.utility.user-data.sh"
+  user_data = "${file("template.utility.user-data.sh")}"
 }
 
-output "instance_id" {
+output "utility_instance_id" {
   value = "${aws_instance.utility.id}"
 }
-output "public_dns" {
+output "utility_public_dns" {
   value = "${aws_instance.utility.public_dns}"
 }
 
@@ -45,6 +39,6 @@ resource "aws_security_group" "sg_utility_access" {
   }
 }
 
-output "group_id" {
+output "utility_sg_id" {
   value = "${aws_security_group.sg_utility_access.id}"
 }
