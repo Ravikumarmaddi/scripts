@@ -1,4 +1,4 @@
-# scripts - example multi-tier AWS environment
+# example multi-tier AWS environment
 - converted everything to a terraform managed environment
 - "www" contains the terraform environment
 - "www/scripts" contains provisioning scripts
