@@ -13,6 +13,7 @@ variable "instance_name" {
     utility = "theseeker"
     database = "squeezebox"
     web = "magicbus"
+    www = "babaoriley"
   }
 }
 
@@ -24,4 +25,16 @@ variable "amis" {
   }
 }
 
+variable "subnets" {
+  default = {
+    us-east-1 = "subnet-edc2bac5,subnet-b396a9c7"
+    us-west-2 = "subnet-860419e4,subnet-c9615dbd"
+  }
+}
 
+variable "azones" {
+  default = {
+    us-east-1 = "us-east-1b,us-east-1c"
+    us-west-2 = "us-west-2a,us-west-2b"
+  }
+}

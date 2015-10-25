@@ -40,6 +40,6 @@ resource "aws_security_group" "sg_utility_access" {
   }
 }
 
-output "utility_sg_id" {
+output "sg_utility_access_id" {
   value = "${aws_security_group.sg_utility_access.id}"
 }
