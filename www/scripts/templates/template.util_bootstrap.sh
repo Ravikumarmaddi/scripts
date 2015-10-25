@@ -1,36 +1,12 @@
 #!/bin/bash
 
-# usage function
-function usage() {
-  echo "Usage: `basename $0` [--help] | [hostname] [dbconn]"
-}
-
-# check params and load variables
-USERHOST=web
-if [[ $# -gt 2 ]]; then
-  usage
-  exit
-elif [[ $# -lt 1 ]]; then
-  DBCONN="squeezebox.cygbcpnnsuvp.us-west-2.rds.amazonaws.com:3306"
-else
-    if [[ $1 == "--help" ]]; then
-      usage
-      exit
-    else
-      USERHOST=$1
-      if [[ $# -eq 2 ]]; then
-        DBCONN=$2
-      else
-        DBCONN=""
-      fi
-    fi
-fi
+USERHOST=""
 
 # ensure the system is up to date
 yum update -y
 
-# install required packages
-yum install httpd php php-mysql unzip -y
+# install some stuff
+yum install bind-utils nc telnet nmap sysstat httpd zip unzip -y
 
 # install system stress tool
 curl "http://dl.fedoraproject.org/pub/epel/6/x86_64/stress-1.0.4-4.el6.x86_64.rpm" -o stress-1.0.4-4.el6.x86_64.rpm
@@ -43,25 +19,6 @@ unzip awscli-bundle.zip
 
 # clean up
 rm -rf awscli-bundle
-rm -rf /var/www/html/*
-
-# populate web root
-aws s3 cp --recursive s3://kpedsotherbucket/html/ /var/www/html
-chmod 644 /var/www/html/*
-
-# configure DB connection
-if [[ -n "$DBCONN" ]]; then
-  DBSHORTNAME=`echo $DBCONN | awk -F . '{print $1}'`
-  sed -i s/testdb.conn/$DBCONN/ /var/www/html/connect.php
-  sed -i s/testdb/$DBSHORTNAME/g /var/www/html/connect.php
-else
-  rm -f /var/www/html/*.php
-fi
-
-# configure web service to run
-chkconfig httpd on
-service httpd start
-setsebool -P httpd_can_network_connect_db=1 #required for RDS connections from httpd
 
 # set the hostname, if specified
 if [ -n "$USERHOST" ]; then

@@ -1,25 +1,6 @@
 #!/bin/bash
 
-# usage function
-function usage() {
-  echo "Usage: `basename $0` [--help] | [hostname]"
-}
-
-# check params and load variables
-USERHOST=utility
-if [[ $# -gt 1 ]]; then
-  usage
-  exit 
-else
-  for o in $@; do
-    if [[ $o == "--help" ]]; then
-      usage
-      exit
-    else
-      USERHOST=$o
-    fi
-  done
-fi
+USERHOST=util
 
 # ensure the system is up to date
 yum update -y
