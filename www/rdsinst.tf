@@ -16,7 +16,7 @@ resource "aws_db_instance" "database" {
   /* database configuration */
   name = "${var.db.name}"
   username = "${var.db.user}"
-  password = "${var.db.passwd}"
+  password = "${var.db_passwd}"
 
   /* add instance to security group */
   vpc_security_group_ids = ["${aws_security_group.sg_database_access.id}"]
