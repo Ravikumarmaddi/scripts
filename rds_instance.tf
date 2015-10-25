@@ -7,7 +7,6 @@ resource "aws_db_instance" "database" {
   name = "${var.instance_name.database}"
   username = "${var.db.user}"
   password = "${var.db.pass}"
-  db_subnet_group_name = "sng_database_access"
 }
 
 output "db_instance_id" {
