@@ -5,8 +5,8 @@ resource "aws_db_instance" "database" {
   engine_version = "5.6.23"
   instance_class = "db.t2.micro"
   name = "${var.instance_name.database}"
-  username = "${var.db.user}"
-  password = "${var.db.pass}"
+  username = "${var.dbuser}"
+  password = "${var.dbpass}"
 }
 
 output "db_instance_id" {

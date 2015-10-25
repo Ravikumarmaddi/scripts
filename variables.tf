@@ -1,14 +1,21 @@
 variable "access_key" {}
 variable "secret_key" {}
+
+variable "dbuser" {}
+variable "dbpass" {}
+
 variable "region" {
   default = "us-west-2"
 }
+
 variable "instance_name" {
   default = {
     utility = "theseeker"
     database = "squeezebox"
+    web = "magicbus"
   }
 }
+
 variable "amis" {
   default = {
     us-east-1 = "ami-61bbf104"
@@ -16,10 +23,5 @@ variable "amis" {
     platform = "CentOS7"
   }
 }
-variable "db" {
-  default = {
-    platform = "MySQL5.6"
-    user = "borris"
-    pass = "SlipKn0t97!"
-  }
-}
+
+

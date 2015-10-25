@@ -2,6 +2,7 @@ resource "aws_instance" "utility" {
   key_name = "kpedersen_aws_rsa"
   ami = "${lookup(var.amis, var.region)}"
   instance_type = "t2.micro"
+  iam_instance_profile = "S3FullAccess"
   vpc_security_group_ids = ["${aws_security_group.sg_utility_access.id}"]
 
   tags {

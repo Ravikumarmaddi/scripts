@@ -6,12 +6,12 @@ function usage() {
 }
 
 # check params and load variables
-USERHOST=WebInstance
+USERHOST=web
 if [[ $# -gt 2 ]]; then
   usage
   exit
 elif [[ $# -lt 1 ]]; then
-  DBCONN=""
+  DBCONN="squeezebox.cygbcpnnsuvp.us-west-2.rds.amazonaws.com:3306"
 else
     if [[ $1 == "--help" ]]; then
       usage
@@ -46,7 +46,7 @@ rm -rf awscli-bundle
 rm -rf /var/www/html/*
 
 # populate web root
-aws s3 cp --recursive s3://kpedsawsbucket/html/ /var/www/html
+aws s3 cp --recursive s3://kpedsotherbucket/html/ /var/www/html
 chmod 644 /var/www/html/*
 
 # configure DB connection
