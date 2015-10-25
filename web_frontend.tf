@@ -2,6 +2,9 @@ resource "aws_instance" "web" {
   key_name = "kpedersen_aws_rsa"
   ami = "${lookup(var.amis, var.region)}"
   instance_type = "t2.micro"
+  root_block_device {
+    delete_on_termination = true
+  }
   availability_zone = "${element(split(",", lookup(var.azones, var.region)), 0)}"
   iam_instance_profile = "S3ReadOnlyAccess"
   vpc_security_group_ids = ["${aws_security_group.sg_web_access.id}"]
@@ -12,7 +15,7 @@ resource "aws_instance" "web" {
     Tier = "web"
   }
 
-  user_data = "${file("template.webtier.user-data.sh")}"
+  user_data = "${file("web.webtier.user-data.sh")}"
 }
 
 output "web_instance_id" {
@@ -26,6 +29,9 @@ resource "aws_instance" "www" {
   key_name = "kpedersen_aws_rsa"
   ami = "${lookup(var.amis, var.region)}"
   instance_type = "t2.micro"
+  root_block_device {
+    delete_on_termination = true
+  }
   availability_zone = "${element(split(",", lookup(var.azones, var.region)), 1)}"
   iam_instance_profile = "S3ReadOnlyAccess"
   vpc_security_group_ids = ["${aws_security_group.sg_web_access.id}"]
@@ -36,7 +42,7 @@ resource "aws_instance" "www" {
     Tier = "web"
   }
 
-  user_data = "${file("template.webtier.user-data.sh")}"
+  user_data = "${file("www.webtier.user-data.sh")}"
 }
 
 output "www_instance_id" {
