@@ -1,5 +1,6 @@
 variable "access_key" {}
 variable "secret_key" {}
+variable "db_passwd" {}
 
 /* Global variables */
 variable "keypair" { default = "kpedersen_aws_rsa" }
@@ -46,6 +47,5 @@ variable "db" {
     dbid = "dbconnect"
     name = "dbconnect"
     user = "boris"
-    passwd = "SlipKn0t97!"
   }
 }
