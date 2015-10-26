@@ -10,7 +10,9 @@
 - create a terraform.tfvars with:
 
 access_key = "YOUR AWS ACCESSKEY"
+
 secret_key = "YOUR AWS SECRETKEY"
+
 db_password = "YOUR DB PASSWORD"
 
 - change permissions on this and ensure it is in your '.gitignore' file (see .gitignore)
