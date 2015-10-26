@@ -7,4 +7,4 @@
 # todo
 - create instance monitoring and alarm configuration
 - bootstrap with chef and create a recipe repository
-- implement packer for image management
+- create a second environment for DR using "backup" variables
