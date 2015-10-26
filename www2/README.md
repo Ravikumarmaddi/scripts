@@ -1,7 +1,7 @@
 # backup region demonstration
 - copy the site file and remove state data
 
-cp -R -p www www2; rm www2/*state*
+cp -R -p www www2; rm www2/\*state\*
 
 - sub the "region.primary" for "region.backup" variables
 
