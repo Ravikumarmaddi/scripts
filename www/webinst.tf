@@ -1,4 +1,4 @@
-/* Set up web hosts in the primary
+/* Set up web hosts in the backup
    region (settings in variables.tf) */
 
 resource "aws_instance" "web" {
@@ -97,8 +97,35 @@ resource "aws_instance" "www" {
     Tier = "web"
   }
 
-  /* pass some user data; could subtitute a provisioner */
+  /* pass some user data; could subtitute a provisioner
   user_data = "${file("scripts/www_bootstrap.sh")}"
+  */
+
+  /* trying out a provisioner setup */
+
+  /* copy up and execute the user data script */
+  provisioner "file" {
+    source = "scripts/www_bootstrap.sh"
+    destination = "/tmp/bootstrap.sh"
+    connection {
+      type = "ssh"
+      user = "centos"
+      key_file = "${var.keyfile}"
+    }
+  }
+  provisioner "remote-exec" {
+    inline = [
+    "sed -i s/DBCONN=\"\"/DBCONN=\"${aws_db_instance.database.endpoint}\"/ /tmp/bootstrap.sh",
+    "chmod +x /tmp/bootstrap.sh",
+    "sudo /tmp/bootstrap.sh"
+    ]
+    connection {
+      type = "ssh"
+      user = "centos"
+      key_file = "${var.keyfile}"
+    }
+  }
+
 }
 
 /* output the instance address */
