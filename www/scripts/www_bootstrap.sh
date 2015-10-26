@@ -2,7 +2,7 @@
 
 # populate variables
 USERHOST="www"
-DBCONN="dbconnect.cygbcpnnsuvp.us-west-2.rds.amazonaws.com:3306"
+DBCONN=""
 
 # ensure the system is up to date
 yum update -y
