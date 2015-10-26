@@ -10,6 +10,11 @@ resource "aws_instance" "utility" {
   ami = "${lookup(var.ami, var.region.primary)}"
   instance_type = "t2.micro"
 
+  /* delete the volume on termination */
+  root_block_device {
+    delete_on_termination = true
+  }
+
   /* provide S3 access to the system */
   iam_instance_profile = "S3FullAccess"
 
