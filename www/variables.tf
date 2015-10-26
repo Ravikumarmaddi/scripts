@@ -27,13 +27,6 @@ variable "ami" {
   }
 }
 
-variable "subnets" {
-  default = {
-    us-east-1 = "subnet-edc2bac5,subnet-b396a9c7"
-    us-west-2 = "subnet-860419e4,subnet-c9615dbd"
-  }
-}
-
 variable "azones" {
   default = {
     us-east-1 = "us-east-1b,us-east-1c"
