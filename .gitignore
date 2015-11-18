@@ -1,4 +1,6 @@
 terraform.tfstate*
 terraform.tfvars
 .terraform*
+.atlas
+terraform/*
 *.swp
