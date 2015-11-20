@@ -40,7 +40,7 @@ resource "aws_instance" "cnode" {
   }
   provisioner "remote-exec" {
     inline = [
-    "sed -i s/USERHOST=\"\"/USERHOST=\"${lookup(var.cluster_nodes, count.index)}\"/ /tmp/bootstrap.sh",
+    "sed -i s/USERHOST=/USERHOST=\"${lookup(var.cluster_nodes, count.index)}\"/ /tmp/bootstrap.sh",
     "chmod +x /tmp/bootstrap.sh",
     "sudo /tmp/bootstrap.sh"
     ]
@@ -53,8 +53,8 @@ resource "aws_instance" "cnode" {
 }
 
 /* output the instance address */
-output "cnode_public_dns" {
-  value = "${join(",", aws_instance.cnode.*.public_dns)}"
+output "cnode_private_dns" {
+  value = "${join(",", aws_instance.cnode.*.private_dns)}"
 }
 
 /* create the cluster tier security group */
@@ -69,6 +69,13 @@ resource "aws_security_group" "sg_cluster_access" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   
+  ingress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    security_groups = ["${aws_security_group.sg_utility_access.id}"]
+
+  }
   egress {
     from_port = 0
     to_port = 0

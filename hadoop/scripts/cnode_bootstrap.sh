@@ -1,8 +1,5 @@
 #!/bin/bash
 
-Don't set, this will be done via template
-USERHOST=""
-
 # ensure the system is up to date
 yum update -y
 
@@ -34,27 +31,6 @@ unzip awscli-bundle.zip
  
 # clean up
 rm -rf awscli-bundle jre-7u45-linux-x64.rpm
-
-# set the hostname, if specified
-if [ -n "$USERHOST" ]; then
-  sed -i '1s/^/preserve_hostname: true\n/' /etc/cloud/cloud.cfg
-  hostname $USERHOST
-  echo $USERHOST > /etc/hostname
-fi
-
-# set the hosts file for easy reference
-#
-# short, long and user names for public IP
-SHOST=`curl -s http://169.254.169.254/latest/meta-data/public-hostname/ | awk -F . '{print $1}'`
-LHOST=`curl -s http://169.254.169.254/latest/meta-data/public-hostname/`
-IPADDR=`curl -s http://169.254.169.254/latest/meta-data/public-ipv4/`
-echo $IPADDR $LHOST $SHOST $USERHOST >> /etc/hosts
-#
-# short, long and user names for local/private IP
-SHOST=`curl -s http://169.254.169.254/latest/meta-data/local-hostname/ | awk -F . '{print $1}'`
-LHOST=`curl -s http://169.254.169.254/latest/meta-data/local-hostname/`
-IPADDR=`curl -s http://169.254.169.254/latest/meta-data/local-ipv4/`
-echo $IPADDR $LHOST $SHOST $USERHOST.local $USERHOST.private >> /etc/hosts
 
 # configure iam user/key and sudoers
 useradd kpedersen -d /home/kpedersen -s /bin/bash
