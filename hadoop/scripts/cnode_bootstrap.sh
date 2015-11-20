@@ -18,6 +18,11 @@ unzip awscli-bundle.zip
 # install ambari and hdp dependencies
   # set open file limit
   echo "fs.file-max = 12288" >> /etc/sysctl.conf; sysctl -p
+  # enable some system swap
+  mkdir /var/swap; touch /var/swap/swapfile; chown root:root /var/swap/swapfile; chmod 600 /var/swap/swapfile
+  dd if=/dev/zero of=/var/swap/swapfile
+  mkswap /var/swap/swapfile; swapon /var/swap/swapfile
+  echo "/var/swap/swapfile	swap	swap	defaults	0 0" >> /etc/fstab
   # selinux permissive mode
   setenforce 0 # needed for Ambari setup to run; not persistent
   # kill the firewall for now

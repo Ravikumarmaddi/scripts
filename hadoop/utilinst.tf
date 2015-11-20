@@ -52,9 +52,12 @@ resource "aws_instance" "utility" {
   }
 }
 
-/* output the instance address */
+/* output the instance addresses */
 output "util_public_dns" {
   value = "${aws_instance.utility.public_dns}"
+}
+output "util_private_dns" {
+  value = "${aws_instance.utility.private_dns}"
 }
 
 /* create the utility tier security group */

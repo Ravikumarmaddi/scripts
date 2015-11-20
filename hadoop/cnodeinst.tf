@@ -20,7 +20,7 @@ resource "aws_instance" "cnode" {
   vpc_security_group_ids = ["${aws_security_group.sg_cluster_access.id}"]
 
   tags {
-    Name = "cnode"
+    Name = "${lookup(var.cluster_nodes, count.index)}"
     Platform = "${var.ami.platform}"
     Tier = "cluster"
   }
