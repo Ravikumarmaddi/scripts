@@ -33,6 +33,9 @@ unzip awscli-bundle.zip
   # installation
   yum install ambari-server -y
   # configuration
+  ambari-server setup -j /usr/java/default -s
+  # startup
+  ambari-server start
  
 # clean up
 rm -rf awscli-bundle jre-7u45-linux-x64.rpm
