@@ -1,12 +1,13 @@
 #!/bin/bash
 
+Don't set, this will be done via template
 USERHOST=""
 
 # ensure the system is up to date
 yum update -y
 
 # install some stuff
-yum install bind-utils nc telnet nmap sysstat httpd zip unzip -y
+yum install bind-utils nc telnet nmap ntp sysstat httpd zip unzip wget -y
 
 # install system stress tool
 curl "http://dl.fedoraproject.org/pub/epel/6/x86_64/stress-1.0.4-4.el6.x86_64.rpm" -o stress-1.0.4-4.el6.x86_64.rpm
@@ -17,8 +18,22 @@ curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
 unzip awscli-bundle.zip
 ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
 
+# install ambari and hdp dependencies
+  # set open file limit
+  echo "fs.file-max = 12288" >> /etc/sysctl.conf; sysctl -p
+  # selinux permissive mode
+  setenforce 0 # needed for Ambari setup to run; not persistent
+  # set up ntp; default configuration will do
+  chkconfig ntpd on; ntpdate pool.ntp.org; /etc/init.d/ntpd start # rolled back systemctl for CentOS 6
+  # grab the java RPM from S3 and install
+  /usr/local/bin/aws s3 cp s3://kpedsotherbucket/packages/jre-7u45-linux-x64.rpm jre-7u45-linux-x64.rpm
+  yum install jre-7u45-linux-x64.rpm -y
+  # grab the Ambari repo
+  wget http://public-repo-1.hortonworks.com/ambari/centos6/1.x/updates/1.6.0/ambari.repo
+  mv ambari.repo /etc/yum.repos.d/
+ 
 # clean up
-rm -rf awscli-bundle
+rm -rf awscli-bundle jre-7u45-linux-x64.rpm
 
 # set the hostname, if specified
 if [ -n "$USERHOST" ]; then

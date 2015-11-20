@@ -33,3 +33,15 @@ variable "azones" {
   }
 }
 
+variable "count" {
+  default = 2
+}
+
+variable "cluster_nodes" {
+  default = {
+  "0" = "cnode0"
+  "1" = "cnode1"
+  "2" = "cnode2"
+  "3" = "cnode3"
+  }
+}
