@@ -40,7 +40,6 @@ resource "aws_instance" "cnode" {
   }
   provisioner "remote-exec" {
     inline = [
-    "sed -i s/USERHOST=/USERHOST=\"${lookup(var.cluster_nodes, count.index)}\"/ /tmp/bootstrap.sh",
     "chmod +x /tmp/bootstrap.sh",
     "sudo /tmp/bootstrap.sh"
     ]

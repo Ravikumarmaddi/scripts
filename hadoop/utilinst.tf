@@ -18,8 +18,8 @@ resource "aws_instance" "utility" {
   /* provide S3 access to the system */
   iam_instance_profile = "S3FullAccess"
 
-  /* add to the security group */
-  vpc_security_group_ids = ["${aws_security_group.sg_utility_access.id}"]
+  /* add to the security groups */
+  vpc_security_group_ids = ["${aws_security_group.sg_utility_access.id}", "${aws_security_group.sg_clus_util_access.id}"]
 
   tags {
     Name = "util"
@@ -60,22 +60,15 @@ output "util_public_dns" {
 /* create the utility tier security group */
 resource "aws_security_group" "sg_utility_access" {
   name = "sg_utility_access"
-  description = "Allow Ambari and inbound ssh to the utility tier"
+  description = "Allow inbound access to the utility tier"
   
-  ingress {
-    from_port = 8080
-    to_port = 8080
-    protocol = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
   ingress {
     from_port = 22
     to_port = 22
     protocol = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
-  
+ 
   egress {
     from_port = 0
     to_port = 0
@@ -84,7 +77,24 @@ resource "aws_security_group" "sg_utility_access" {
   }
 }
 
+/* create a second group for cluster back-connections */
+resource "aws_security_group" "sg_clus_util_access" {
+  name = "sg_clus_util_access"
+
+  ingress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    security_groups = ["${aws_security_group.sg_cluster_access.id}"]
+  }
+}
+
 /* output the group id */
 output "sg_utility_access_id" {
   value = "${aws_security_group.sg_utility_access.id}"
+}
+
+/* output the group id */
+output "sg_clus_util_access_id" {
+  value = "${aws_security_group.sg_clus_util_access.id}"
 }

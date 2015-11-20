@@ -20,6 +20,8 @@ unzip awscli-bundle.zip
   echo "fs.file-max = 12288" >> /etc/sysctl.conf; sysctl -p
   # selinux permissive mode
   setenforce 0 # needed for Ambari setup to run; not persistent
+  # kill the firewall for now
+  /etc/init.d/iptables stop; chkconfig iptables off
   # set up ntp; default configuration will do
   chkconfig ntpd on; ntpdate pool.ntp.org; /etc/init.d/ntpd start # rolled back systemctl for CentOS 6
   # grab the java RPM from S3 and install
