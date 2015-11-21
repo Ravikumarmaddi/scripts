@@ -83,6 +83,7 @@ resource "aws_security_group" "sg_utility_access" {
 /* create a second group for cluster back-connections */
 resource "aws_security_group" "sg_clus_util_access" {
   name = "sg_clus_util_access"
+  description = "Allow new connections from the cluster"
 
   ingress {
     from_port = 0

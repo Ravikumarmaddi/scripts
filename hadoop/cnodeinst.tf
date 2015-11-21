@@ -27,7 +27,7 @@ resource "aws_instance" "cnode" {
   }
 
   # cluster size
-  count = "${var.count}"
+  count = "${var.count.cnodes}"
 
   /* copy up and execute the user data script */
   provisioner "file" {
