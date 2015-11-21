@@ -34,7 +34,7 @@ variable "azones" {
 }
 
 variable "count" {
-  default = 2
+  default = 4
 }
 
 variable "cluster_nodes" {

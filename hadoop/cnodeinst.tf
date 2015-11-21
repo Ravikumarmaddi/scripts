@@ -8,9 +8,10 @@ resource "aws_instance" "cnode" {
   ami = "${lookup(var.ami, var.region.primary)}"
   instance_type = "t2.micro"
 
-  /* delete the volume on termination */
+  /* delete the volume on termination, make it big enough for Hadoop */
   root_block_device {
     delete_on_termination = true
+    volume_size = 20
   }
 
   /* provide S3 access to the system */
