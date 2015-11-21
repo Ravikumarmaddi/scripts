@@ -20,7 +20,7 @@ unzip awscli-bundle.zip
   echo "fs.file-max = 12288" >> /etc/sysctl.conf; sysctl -p
   # enable some system swap
   mkdir /var/swap; touch /var/swap/swapfile; chown root:root /var/swap/swapfile; chmod 600 /var/swap/swapfile
-  dd if=/dev/zero of=/var/swap/swapfile
+  dd if=/dev/zero of=/var/swap/swapfile bs=1014 count=2097152
   mkswap /var/swap/swapfile; swapon /var/swap/swapfile
   echo "/var/swap/swapfile	swap	swap	defaults	0 0" >> /etc/fstab
   # selinux permissive mode
