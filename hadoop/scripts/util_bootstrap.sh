@@ -28,7 +28,7 @@ unzip awscli-bundle.zip
   /usr/local/bin/aws s3 cp s3://kpedsotherbucket/packages/jre-7u45-linux-x64.rpm jre-7u45-linux-x64.rpm
   yum install jre-7u45-linux-x64.rpm -y
   # grab the Ambari repo
-  wget http://public-repo-1.hortonworks.com/ambari/centos6/1.x/updates/1.6.0/ambari.repo
+  wget -nv http://public-repo-1.hortonworks.com/ambari/centos6/2.x/updates/2.1.1/ambari.repo -O /etc/yum.repos.d/ambari.repo
   mv ambari.repo /etc/yum.repos.d/
   # installation
   yum install ambari-server -y

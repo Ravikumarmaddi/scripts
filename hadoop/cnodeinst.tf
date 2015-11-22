@@ -18,7 +18,7 @@ resource "aws_instance" "cnode" {
   iam_instance_profile = "S3FullAccess"
 
   /* add to the security group */
-  vpc_security_group_ids = ["${aws_security_group.sg_cluster_access.id}"]
+  vpc_security_group_ids = ["${aws_security_group.sg_cluster_access.id}", "${aws_security_group.sg_clus_clus_access.id}"]
 
   tags {
     Name = "${lookup(var.cluster_nodes, count.index)}"
@@ -76,6 +76,7 @@ resource "aws_security_group" "sg_cluster_access" {
     security_groups = ["${aws_security_group.sg_utility_access.id}"]
 
   }
+
   egress {
     from_port = 0
     to_port = 0
@@ -87,4 +88,22 @@ resource "aws_security_group" "sg_cluster_access" {
 /* output the group id */
 output "sg_cluster_access_id" {
   value = "${aws_security_group.sg_cluster_access.id}"
+}
+
+/* create a second group for cluster inter-connections */
+resource "aws_security_group" "sg_clus_clus_access" {
+  name = "sg_clus_clus_access"
+  description = "Allow new connections from within the cluster"
+
+  ingress {
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+    security_groups = ["${aws_security_group.sg_cluster_access.id}"]
+  }
+}
+
+/* output the group id */
+output "sg_clus_clus_access_id" {
+  value = "${aws_security_group.sg_clus_clus_access.id}"
 }
