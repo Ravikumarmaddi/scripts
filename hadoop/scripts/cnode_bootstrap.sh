@@ -18,6 +18,9 @@ unzip awscli-bundle.zip
 # install ambari and hdp dependencies
   # set open file limit
   echo "fs.file-max = 12288" >> /etc/sysctl.conf; sysctl -p
+  # disable hugepages
+  echo never > /sys/kernel/mm/redhat_transparent_hugepage/enabled
+  echo never > /sys/kernel/mm/redhat_transparent_hugepage/defrag
   # enable some system swap
   mkdir /var/swap; touch /var/swap/swapfile; chown root:root /var/swap/swapfile; chmod 600 /var/swap/swapfile
   dd if=/dev/zero of=/var/swap/swapfile bs=1014 count=2097152
