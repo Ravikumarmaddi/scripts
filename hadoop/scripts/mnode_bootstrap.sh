@@ -35,6 +35,8 @@ unzip awscli-bundle.zip
   yum install jre-7u45-linux-x64.rpm -y
   # grab the Ambari repo
   wget -nv http://public-repo-1.hortonworks.com/ambari/centos7/2.x/updates/2.1.2/ambari.repo -O /etc/yum.repos.d/ambari.repo
+  # mnodes will need mysql repos... mariadb unsupported by ambari
+  wget http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm -O mysql-community-release-el7-5.noarch.rpm
  
 # clean up
 rm -rf awscli-bundle jre-7u45-linux-x64.rpm
