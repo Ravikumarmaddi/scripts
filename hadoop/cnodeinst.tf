@@ -10,8 +10,8 @@ resource "aws_instance" "cnode" {
 
   /* delete the volume on termination, make it big enough for Hadoop */
   root_block_device {
-    delete_on_termination = true
-    volume_size = 20
+    delete_on_termination = "true"
+    volume_size = "48"
   }
 
   /* provide S3 access to the system */

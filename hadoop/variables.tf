@@ -18,11 +18,18 @@ variable "region" {
   }
 }
 
+variable "type" {
+  default = {
+    "cnode" = "t2.large"
+    "mnode" = "t2.large"
+  }
+}
+
 variable "ami" {
   default = {
-    us-east-1 = "ami-57cd8732"
-    us-west-2 = "ami-1255b321"
-    platform = "CentOS6"
+    us-east-1 = "ami-61bbf104"
+    us-west-2 = "ami-d440a6e7"
+    platform = "CentOS 7"
   }
 }
 
@@ -36,7 +43,7 @@ variable "azones" {
 variable "count" {
   default = {
     "cnodes" = 4
-    "mnodes" = 2
+    "mnodes" = 3
   }
 }
 
