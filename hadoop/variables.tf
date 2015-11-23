@@ -13,12 +13,12 @@ variable "keyfile" { default = "/home/kpedersen/.ssh/kpedersen_aws_rsa" }
 
 variable "region" {
   default { 
-    primary = "us-west-2"
-    backup = "us-east-1"
+    "primary" = "us-west-2"
+    "backup" = "us-east-1"
   }
 }
 
-variable "type" {
+variable "insttype" {
   default = {
     "cnode" = "t2.large"
     "mnode" = "t2.large"
@@ -27,23 +27,23 @@ variable "type" {
 
 variable "ami" {
   default = {
-    us-east-1 = "ami-61bbf104"
-    us-west-2 = "ami-d440a6e7"
-    platform = "CentOS 7"
+    "us-east-1" = "ami-61bbf104"
+    "us-west-2" = "ami-d440a6e7"
+    "platform" = "CentOS 7"
   }
 }
 
 variable "azones" {
   default = {
-    us-east-1 = "us-east-1b,us-east-1c"
-    us-west-2 = "us-west-2a,us-west-2b"
+    "us-east-1" = "us-east-1b,us-east-1c"
+    "us-west-2" = "us-west-2a,us-west-2b"
   }
 }
 
 variable "count" {
   default = {
-    "cnodes" = 4
-    "mnodes" = 3
+    "cnodes" = "4"
+    "mnodes" = "3"
   }
 }
 
@@ -62,5 +62,6 @@ variable "master_nodes" {
   default = {
     "0" = "mnode0"
     "1" = "mnode1"
+    "2" = "mnode2"
   }
 }
