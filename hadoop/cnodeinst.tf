@@ -6,7 +6,7 @@ resource "aws_instance" "cnode" {
 
   /* select the appropriate AMI */
   ami = "${lookup(var.ami, var.region.primary)}"
-  instance_type = "t2.micro"
+  instance_type = "${var.insttype.cnode}"
 
   /* delete the volume on termination, make it big enough for Hadoop */
   root_block_device {
