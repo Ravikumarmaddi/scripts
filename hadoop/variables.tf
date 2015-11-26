@@ -20,8 +20,8 @@ variable "region" {
 
 variable "insttype" {
   default = {
-    "cnode" = "t2.large"
-    "mnode" = "t2.large"
+    "cnode" = "t2.micro"
+    "mnode" = "t2.micro"
   }
 }
 
@@ -42,8 +42,8 @@ variable "azones" {
 
 variable "count" {
   default = {
-    "cnodes" = "4"
-    "mnodes" = "3"
+    "cnodes" = "1"
+    "mnodes" = "1"
   }
 }
 

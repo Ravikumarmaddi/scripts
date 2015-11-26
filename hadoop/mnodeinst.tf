@@ -39,10 +39,22 @@ resource "aws_instance" "mnode" {
       key_file = "${var.keyfile}"
     }
   }
+  provisioner "file" {
+    source = "scripts/userswitch.sh"
+    destination = "/tmp/userswitch.sh"
+    connection {
+      type = "ssh"
+      user = "centos"
+      key_file = "${var.keyfile}"
+    }
+  }
   provisioner "remote-exec" {
     inline = [
-    "chmod +x /tmp/bootstrap.sh",
-    "sudo /tmp/bootstrap.sh"
+    "chmod +x /tmp/bootstrap.sh /tmp/userswitch.sh",
+    "sudo /tmp/bootstrap.sh",
+    "sudo sed -i s/hostname=localhost/hostname=${aws_instance.utility.private_dns}/ /etc/ambari-agent/conf/ambari-agent.ini",
+    "sudo ambari-agent start",
+    "sudo /tmp/userswitch.sh"
     ]
     connection {
       type = "ssh"

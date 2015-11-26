@@ -35,22 +35,9 @@ unzip awscli-bundle.zip
   yum install jre-7u45-linux-x64.rpm -y
   # grab the Ambari repo
   wget -nv http://public-repo-1.hortonworks.com/ambari/centos7/2.x/updates/2.1.2/ambari.repo -O /etc/yum.repos.d/ambari.repo
+  yum install ambari-agent -y
   # mnodes will need mysql repos... mariadb unsupported by ambari
   wget http://dev.mysql.com/get/mysql-community-release-el7-5.noarch.rpm -O mysql-community-release-el7-5.noarch.rpm
  
 # clean up
 rm -rf awscli-bundle jre-7u45-linux-x64.rpm
-
-# configure iam user/key and sudoers
-useradd kpedersen -d /home/kpedersen -s /bin/bash
-usermod -G wheel,adm kpedersen
-mkdir -p /home/kpedersen/.ssh
-curl -s "http://169.254.169.254/latest/meta-data/public-keys/0/openssh-key/" -o /home/kpedersen/.ssh/authorized_keys
-chmod 700 /home/kpedersen/.ssh
-chmod 600 /home/kpedersen/.ssh/authorized_keys
-chown -R kpedersen:kpedersen /home/kpedersen/.ssh
-sed -i s/centos/kpedersen/g /etc/sudoers.d/*
-
-# clean up bash history
-cat /dev/null > /root/.bash_history
-cat /dev/null > /home/centos/.bash_history
