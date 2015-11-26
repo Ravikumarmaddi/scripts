@@ -1,0 +1,22 @@
+{
+  "blueprint" : "testclus",
+  "default_password" : "admin",
+  "host_groups" :[
+    { 
+      "name":"host_group_1",
+      "hosts":[{"fqdn":""},{"fqdn":""},{"fqdn":""},{"fqdn":""}]
+    },
+    {
+      "name":"host_group_2",
+      "hosts":[{"fqdn":""}]
+    },
+    {
+      "name":"host_group_3",
+      "hosts":[{"fqdn":""}]
+    },
+    {
+      "name":"host_group_4",
+      "hosts":[{"fqdn":""}]
+    }
+  ]
+}
