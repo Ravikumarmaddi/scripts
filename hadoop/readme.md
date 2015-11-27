@@ -35,7 +35,7 @@ b. Post a blueprint (i.e. previously exported from a wizard-based setup):
 curl -H "X-Requested-By: kpedersen" -X POST -u admin:admin http://[terraform output: "util_private_dns"]:8080/api/v1/blueprints/testclus -d @testclus.json
 
 c. Get a list of clusters (should be an empty set to start):
-curl -H "X-Requested-By: kpedersen" -X GET -u admin:admin http://ip-172-31-44-116.us-west-2.compute.internal:8080/api/v1/clusters
+curl -H "X-Requested-By: kpedersen" -X GET -u admin:admin http://[terraform output: "util_private_dns"]:8080/api/v1/clusters
 
 d. Post a cluster configuration template (created from terraform output, a list of the cluster nodes (see blueprints/hostmap.json):
 
