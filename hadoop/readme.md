@@ -27,18 +27,22 @@ $ ssh -i ~/.ssh/myrsakey -D 55055 [terraform output: "util_public_dns"]
 9. Configure a blueprint and launch a cluster:
 
 a. Get a list of blue prints (should be an empty set to start):
-curl -H "X-Requested-By: kpedersen" -X GET -u admin:admin http://ip-172-31-44-116.us-west-2.compute.internal:8080/api/v1/blueprints
+
+curl -H "X-Requested-By: kpedersen" -X GET -u admin:admin http://[terraform output: "util_private_dns"]:8080/api/v1/blueprints
 
 b. Post a blueprint (i.e. previously exported from a wizard-based setup):
-curl -H "X-Requested-By: kpedersen" -X POST -u admin:admin http://ip-172-31-44-116.us-west-2.compute.internal:8080/api/v1/blueprints/testclus -d @testclus.json
+
+curl -H "X-Requested-By: kpedersen" -X POST -u admin:admin http://[terraform output: "util_private_dns"]:8080/api/v1/blueprints/testclus -d @testclus.json
 
 c. Get a list of clusters (should be an empty set to start):
 curl -H "X-Requested-By: kpedersen" -X GET -u admin:admin http://ip-172-31-44-116.us-west-2.compute.internal:8080/api/v1/clusters
 
 d. Post a cluster configuration template (created from terraform output, a list of the cluster nodes (see blueprints/hostmap.json):
-curl -H "X-Requested-By: kpedersen" -X POST -u admin:admin http://ip-172-31-44-116.us-west-2.compute.internal:8080/api/v1/clusters -d @hostmap.json
+
+curl -H "X-Requested-By: kpedersen" -X POST -u admin:admin http://[terraform output: "util_private_dns"]:8080/api/v1/clusters -d @hostmap.json
+
 {
-  "href" : "http://ip-172-31-44-116.us-west-2.compute.internal:8080/api/v1/clusters/testclus/requests/1",
+  "href" : "[terraform output: "util_private_dns"]:8080/api/v1/clusters/testclus/requests/1",
   "Requests" : {
     "id" : 1,
     "status" : "Accepted"
