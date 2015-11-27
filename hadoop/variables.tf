@@ -2,11 +2,8 @@ variable "access_key" {}
 variable "secret_key" {}
 
 /* Global variables */
-variable "keypair" { default = "kpedersen_aws_rsa" }
-variable "dnszone" { default = "Z2OCSN1ZPHG5PO" }
-
-/* Local variables */
-variable "keyfile" { default = "/home/kpedersen/.ssh/kpedersen_aws_rsa" }
+variable "keypair" {}
+variable "keyfile" {}
 
 /* Region-specific setup is below. Uses
    multiple regions, "primary" & "backup" for DR. */
@@ -20,8 +17,8 @@ variable "region" {
 
 variable "insttype" {
   default = {
-    "cnode" = "t2.micro"
-    "mnode" = "t2.micro"
+    "cnode" = "t2.large"
+    "mnode" = "t2.large"
   }
 }
 
@@ -42,8 +39,8 @@ variable "azones" {
 
 variable "count" {
   default = {
-    "cnodes" = "1"
-    "mnodes" = "1"
+    "cnodes" = "4"
+    "mnodes" = "3"
   }
 }
 
