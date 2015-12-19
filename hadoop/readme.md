@@ -1,45 +1,65 @@
-Hadoop cluster terraform templates and provisioning scripts for Ambari / Hortonworks.
+Hadoop cluster Terraform templates and Ansible playbooks for Ambari / Hortonworks deployment.
 
 Specify most cluster configuration variables in "variables.tf".
 
-Use internal ec2 node names for Ambari system list.
+So far tested with CentOS 7 and Ambari.
 
-Master nodes in "mnodeinst.tf" are provisioned with MySQL repositories.
+Java version and build are configurable from within each playbook (cnodes.yaml, mnodes.yaml and utility.yaml files in playbooks/).
+
+Ansible host inventory and ambari server are automatically generated from terraform output and copied to the utility host for reference. If changes are made to the cluster, it's critical to stop all ambari agents, either re-launch the utility host (to reconstruct the ansiblehosts.txt) or update the ansiblehosts.txt manually, and then re-run the site playbook.
+
+To stop the agents across the cluster and shut down the ambari server:
+
+$ ansible-playbook --private-key .ssh/mykey stopagents.yaml
+
+A successful build should result in two addresses output. The public address should be used to connect your ssh proxy, and the internal address to connect to your Ambari Server instance on HTTP/8080.
+
+Master nodes are provisioned with MySQL repositories, and can be used to configure Hadoop services. If the number of master nodes changes from 3, the 'blueprints/hostmap.tpl' file will require update to accommodate the appropriate number of masters.
 
 Instructions:
 
-1. Create terraform.tfvar with AWS access key and secret key for your IAM account. 
-2. Ensure terraform is installed. From the "hadoop" directory, run "terraform plan" and correct any errors.
-3. Execute "terraform apply" and watch the build output. Current provisioners are CentOS-specific bash scripts.
-4. Output from the terraform command will include the utility host's public address.
-5. Recommendation is to size the cluster and then install via the Ambari setup wizard for the initial installation.
-6. Connect to the remote network via ssh SOCKS proxy:
+- Create terraform.tfvars with AWS access key and secret key for your IAM account, IAM keypair and local keyfile.
+- Ensure terraform is installed. From the main project directory, run "terraform plan" and correct any errors.
+- Execute "terraform apply" and watch the build output.
+- Output from the terraform command includes the utility host's private and public dns addresses.
+- Connect to the remote network via ssh SOCKS proxy:
+```
+$ ssh -i ~/.ssh/myrsakey -l centos -D 55055 [terraform output: "util_public_dns"]
+```
+- Configure your browser's proxy settings for SOCK5 operation on localhost:55055 and enable remote DNS
+- From the utility host, run the ansible playbooks, they should complete without failure:
+```
+$ ansible --private-key .ssh/mykey all -m ping  # checking hosts are up and accepting host authenticity here
+$ ansible-playbook --private-key .ssh/mykey site.yaml  # configure the cluster hosts, ambari server and agents
+$ ansible-playbook --private-key .ssh/mykey cluster.yaml  # configure the cluster services
+```
+- Connect to Ambari in your browser with:
+```
+HTTP://[terraform output: "util_private_dns"]:8080/    #(default login is admin:admin)
+```
+...and watch the cluster build!
 
-$ ssh -i ~/.ssh/myrsakey -D 55055 [terraform output: "util_public_dns"]
+Useful curl commands for manual execution/verification (these steps are completed by the 'cluster' playbook):
 
-7. Configure your browser's proxy settings for SOCK5 operation on localhost:55055 and enable remote DNS
-8. Connect to Ambari in your browser with HTTP://[terraform output: "util_private_dns"]:8080/
-
-(default login is admin:admin)
-
-9. Launch the installation wizard (click the button, follow the steps); OR
-
-9. Configure a blueprint and launch a cluster:
-
-a. Get a list of blue prints (should be an empty set to start):
-
-curl -H "X-Requested-By: kpedersen" -X GET -u admin:admin http://[terraform output: "util_private_dns"]:8080/api/v1/blueprints
-
-b. Post a blueprint (i.e. previously exported from a wizard-based setup):
-
-curl -H "X-Requested-By: kpedersen" -X POST -u admin:admin http://[terraform output: "util_private_dns"]:8080/api/v1/blueprints/testclus -d @testclus.json
-
-c. Get a list of clusters (should be an empty set to start):
-curl -H "X-Requested-By: kpedersen" -X GET -u admin:admin http://[terraform output: "util_private_dns"]:8080/api/v1/clusters
-
-d. Post a cluster configuration template (created from terraform output, a list of the cluster nodes (see blueprints/hostmap.json):
-
-curl -H "X-Requested-By: kpedersen" -X POST -u admin:admin http://[terraform output: "util_private_dns"]:8080/api/v1/clusters -d @hostmap.json
+List your registered hosts to confirm ambari knows about them:
+```
+$ curl -H "X-Requested-By: Pythian" -X GET -u admin:admin http://[terraform output: "util_private_dns"]:8080/api/v1/hosts
+```
+Get a list of registered blueprints:
+```
+$ curl -H "X-Requested-By: Pythian" -X GET -u admin:admin http://[terraform output: "util_private_dns"]:8080/api/v1/blueprints
+```
+Post a blueprint to the Ambari server:
+```
+$ curl -H "X-Requested-By: Pythian" -X POST -u admin:admin http://[terraform output: "util_private_dns"]:8080/api/v1/blueprints/testclus -d @testclus.json
+```
+Get a list of managed clusters:
+```
+$ curl -H "X-Requested-By: Pythian" -X GET -u admin:admin http://[terraform output: "util_private_dns"]:8080/api/v1/clusters
+```
+Post a cluster configuration template:
+```
+$ curl -H "X-Requested-By: Pythian" -X POST -u admin:admin http://[terraform output: "util_private_dns"]:8080/api/v1/clusters -d @hostmap.json
 
 {
   "href" : "[terraform output: "util_private_dns"]:8080/api/v1/clusters/testclus/requests/1",
@@ -47,5 +67,4 @@ curl -H "X-Requested-By: kpedersen" -X POST -u admin:admin http://[terraform out
     "id" : 1,
     "status" : "Accepted"
 }
-
-e. Note that at this point, the cluster should begin building. Agents are pre-registered by terraform to ensure they are available for the build.
+```
